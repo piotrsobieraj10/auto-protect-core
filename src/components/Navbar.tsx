@@ -7,7 +7,7 @@ const Navbar = () => {
       <div className="container mx-auto px-6 h-16 flex items-center justify-between">
         <a href="#" className="flex items-center gap-2">
           <Shield className="h-6 w-6 text-primary" />
-          <span className="text-lg font-bold">AutoGuard</span>
+          <span className="text-lg font-bold">AutoSafe</span>
         </a>
 
         <div className="hidden md:flex items-center gap-8">
