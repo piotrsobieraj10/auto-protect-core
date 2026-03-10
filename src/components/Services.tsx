@@ -11,7 +11,7 @@ const services = [
     icon: CreditCard,
     title: "System eToll",
     description:
-      "Instalacja urządzeń OBU do systemu eToll. Zgodność z wymaganiami KAS. Szybki montaż bez ingerencji w instalację pojazdu.",
+      "Instalacja urządzeń OBU do systemu eToll. Pełna zgodność z wymaganiami KAS. Profesjonalny montaż i konfiguracja urządzenia.",
   },
   {
     icon: Shield,
