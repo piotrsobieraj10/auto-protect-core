@@ -2,22 +2,22 @@ import { MapPin, CreditCard, Shield, Locate, Truck, Lock } from "lucide-react";
 
 const services = [
   {
+    icon: Shield,
+    title: "Zabezpieczenia antykradzieżowe",
+    description:
+      "Blokady CAN, immobilizery, autoryzacja kierowcy. Wielopoziomowa ochrona przed kradzieżą i włamaniem do pojazdu.",
+  },
+  {
+    icon: Lock,
+    title: "Odzyskiwanie pojazdów",
+    description:
+      "Ukryte systemy śledzenia do odzyskiwania skradzionych pojazdów. Współpraca z policją w celu szybkiego zlokalizowania pojazdu.",
+  },
+  {
     icon: MapPin,
     title: "Lokalizatory GPS",
     description:
       "Montaż profesjonalnych lokalizatorów GPS z monitoringiem w czasie rzeczywistym. Śledź pozycję pojazdu 24/7 z aplikacji mobilnej.",
-  },
-  {
-    icon: CreditCard,
-    title: "System eToll",
-    description:
-      "Instalacja urządzeń OBU do systemu eToll. Pełna zgodność z wymaganiami KAS. Profesjonalny montaż i konfiguracja urządzenia.",
-  },
-  {
-    icon: Shield,
-    title: "Zabezpieczenia antykradzieżowe",
-    description:
-      "Blokady CAN, immobilizery, autoryzacja kierowcy. Wielopoziomowa ochrona przed kradzieżą i włamaniem.",
   },
   {
     icon: Locate,
@@ -26,16 +26,16 @@ const services = [
       "Kompleksowe systemy zarządzania flotą pojazdów. Kontrola trasy, zużycia paliwa i stylu jazdy kierowców.",
   },
   {
+    icon: CreditCard,
+    title: "System eToll",
+    description:
+      "Instalacja urządzeń OBU do systemu eToll. Pełna zgodność z wymaganiami KAS. Profesjonalny montaż i konfiguracja urządzenia.",
+  },
+  {
     icon: Truck,
     title: "Czujniki i telematyka",
     description:
       "Montaż czujników temperatury, otwarcia drzwi, poziomu paliwa. Pełna telematyka dla pojazdów dostawczych.",
-  },
-  {
-    icon: Lock,
-    title: "Odzyskiwanie pojazdów",
-    description:
-      "Ukryte systemy śledzenia do odzyskiwania skradzionych pojazdów. Współpraca z policją w celu szybkiego zlokalizowania pojazdu.",
   },
 ];
 
