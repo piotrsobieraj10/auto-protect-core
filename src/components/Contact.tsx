@@ -59,7 +59,7 @@ const Contact = () => {
                 </div>
                 <div>
                   <div className="text-sm text-muted-foreground">Adres</div>
-                  <div className="font-medium">ul. Przykładowa 10, Warszawa</div>
+                  <div className="font-medium">Zakrzewska Wola 85C, 26-652 Zakrzew</div>
                 </div>
               </div>
             </div>
