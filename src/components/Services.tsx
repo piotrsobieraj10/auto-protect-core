@@ -35,7 +35,7 @@ const services = [
     icon: Lock,
     title: "Odzyskiwanie pojazdów",
     description:
-      "Ukryte systemy śledzenia do odzyskiwania skradzionych pojazdów. Współpraca z policją i firmami ubezpieczeniowymi.",
+      "Ukryte systemy śledzenia do odzyskiwania skradzionych pojazdów. Współpraca z policją w celu szybkiego zlokalizowania pojazdu.",
   },
 ];
 
