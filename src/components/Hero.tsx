@@ -47,7 +47,7 @@ const Hero = () => {
           <div className="flex gap-8 mt-14">
             {[
               { value: "500+", label: "Montaży" },
-              { value: "5 lat", label: "Doświadczenia" },
+              { value: "9 lat", label: "Doświadczenia" },
               { value: "24/7", label: "Monitoring" },
             ].map((stat) => (
               <div key={stat.label}>
