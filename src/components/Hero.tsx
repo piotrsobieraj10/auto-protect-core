@@ -18,18 +18,18 @@ const Hero = () => {
           <div className="flex items-center gap-2 mb-6">
             <Shield className="h-5 w-5 text-primary" />
             <span className="text-sm font-medium tracking-widest uppercase text-primary">
-              GPS · eToll · Zabezpieczenia
+              Zabezpieczenia antykradzieżowe · GPS · eToll
             </span>
           </div>
 
           <h1 className="text-5xl md:text-7xl font-bold leading-tight mb-6">
-            Chroń swój
-            <span className="text-gradient block">pojazd</span>
+            Skuteczna ochrona
+            <span className="text-gradient block">przed kradzieżą</span>
           </h1>
 
           <p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-lg leading-relaxed">
-            Profesjonalny montaż systemów GPS, eToll oraz zabezpieczeń antykradzieżowych.
-            Twoje auto w dobrych rękach.
+            Wielopoziomowe systemy zabezpieczeń antykradzieżowych — blokady CAN, immobilizery, autoryzacja kierowcy.
+            Profesjonalny montaż i pełna ochrona Twojego pojazdu.
           </p>
 
           <div className="flex flex-wrap gap-4">
@@ -46,9 +46,9 @@ const Hero = () => {
 
           <div className="flex gap-8 mt-14">
             {[
-              { value: "500+", label: "Montaży" },
+              { value: "500+", label: "Zabezpieczonych aut" },
               { value: "9 lat", label: "Doświadczenia" },
-              { value: "24/7", label: "Monitoring" },
+              { value: "100%", label: "Skuteczności" },
             ].map((stat) => (
               <div key={stat.label}>
                 <div className="text-2xl font-bold text-primary">{stat.value}</div>
