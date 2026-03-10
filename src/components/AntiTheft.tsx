@@ -29,7 +29,7 @@ const features = [
 ];
 
 const benefits = [
-  "Ochrona przed kradzieżą na „walizkę" (relay attack)",
+  "Ochrona przed kradzieżą na walizkę (relay attack)",
   "Zabezpieczenie przed podmianą kluczyka",
   "Blokada uruchomienia silnika bez autoryzacji",
   "Powiadomienia o próbach włamania na telefon",
