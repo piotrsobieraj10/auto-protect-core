@@ -50,7 +50,7 @@ const Contact = () => {
                 </div>
                 <div>
                   <div className="text-sm text-muted-foreground">Email</div>
-                  <div className="font-medium">kontakt@autosafe.pl</div>
+                  <div className="font-medium">autosafe@o2.pl</div>
                 </div>
               </div>
               <div className="flex items-center gap-4">
