@@ -113,8 +113,8 @@ const Contact = () => {
                 maxLength={1000}
               />
             </div>
-            <Button variant="hero" size="lg" type="submit" className="w-full">
-              Wyślij zapytanie
+            <Button variant="hero" size="lg" type="submit" className="w-full" disabled={isSubmitting}>
+              {isSubmitting ? "Wysyłanie..." : "Wyślij zapytanie"}
             </Button>
           </form>
         </div>
