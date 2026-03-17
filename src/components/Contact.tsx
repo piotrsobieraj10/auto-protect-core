@@ -4,18 +4,35 @@ import { Textarea } from "@/components/ui/textarea";
 import { Phone, Mail, MapPin } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 const Contact = () => {
   const [formData, setFormData] = useState({ name: "", phone: "", message: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name.trim() || !formData.phone.trim()) {
       toast.error("Wypełnij wymagane pola");
       return;
     }
-    toast.success("Dziękujemy! Skontaktujemy się wkrótce.");
-    setFormData({ name: "", phone: "", message: "" });
+
+    setIsSubmitting(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('send-contact-email', {
+        body: formData,
+      });
+
+      if (error) throw error;
+
+      toast.success("Dziękujemy! Skontaktujemy się wkrótce.");
+      setFormData({ name: "", phone: "", message: "" });
+    } catch (error) {
+      console.error('Error sending message:', error);
+      toast.error("Nie udało się wysłać wiadomości. Spróbuj ponownie.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -96,8 +113,8 @@ const Contact = () => {
                 maxLength={1000}
               />
             </div>
-            <Button variant="hero" size="lg" type="submit" className="w-full">
-              Wyślij zapytanie
+            <Button variant="hero" size="lg" type="submit" className="w-full" disabled={isSubmitting}>
+              {isSubmitting ? "Wysyłanie..." : "Wyślij zapytanie"}
             </Button>
           </form>
         </div>
