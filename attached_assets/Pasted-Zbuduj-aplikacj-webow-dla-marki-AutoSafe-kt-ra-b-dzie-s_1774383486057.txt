@@ -1,0 +1,63 @@
+Zbuduj aplikację webową dla marki AutoSafe, która będzie służyć jako wizytówka z bazą wiedzy (FAQ) oraz narzędzie dla instalatora do generowania protokołów montażu PDF. Zastosuj następujące wytyczne:
+
+1. Baza Wiedzy (FAQ) na stronie głównej:
+
+Stwórz sekcję FAQ używając komponentu Accordion (rozwijane panele).
+
+Wprowadź poniższe pytania i odpowiedzi:
+
+Gwarancja pojazdu: Montaż odbywa się cyfrowo przez magistralę CAN, bez przecinania instalacji. Jest to metoda bezinwazyjna, bezpieczna dla gwarancji ASO.
+
+Tryb serwisowy: Przed oddaniem auta do warsztatu aktywuj tryb serwisowy. Zabezpieczenie staje się wtedy pasywne i niewykrywalny dla testerów diagnostycznych.
+
+Metody autoryzacji: Możesz odblokować odjazd za pomocą kodu PIN (przyciski na kierownicy/kokpicie), breloka Bluetooth ID lub aplikacji w telefonie.
+
+Ochrona przed 'walizką': Rozwiązanie blokuje odjazd nawet po przechwyceniu sygnału z oryginalnego kluczyka. Bez dodatkowej autoryzacji silnik nie zapali.
+
+Homologacja E20: Wszystkie stosowane urządzenia posiadają polską homologację E20, co jest gwarancją jakości i pozwala na zniżki w ubezpieczeniu AC.
+
+Pobór prądu: Urządzenia są ultra-energooszczędne (pobór rzędu 1-2mA), co zapobiega rozładowaniu akumulatora nawet przy długim postoju.
+
+Kradzież 'na lawetę': Możliwa jest współpraca z modułami GPS, powiadamiającymi o nieautoryzowanym ruchu pojazdu.
+
+Kod awaryjny: W razie utraty telefonu lub breloka, każdy zestaw posiada unikalny kod ratunkowy do natychmiastowego odblokowania auta.
+
+Kompatybilność: Obsługujemy większość marek premium, hybryd oraz aut elektrycznych dostępnych na rynku.
+
+Czas montażu: Instalacja trwa zazwyczaj od 2 do 4 godzin i jest wykonywana w sposób całkowicie dyskretny.
+
+Przełożenie do innego auta: Przy sprzedaży auta urządzenie można zdemontować i po aktualizacji oprogramowania zainstalować w nowym pojeździe.
+
+Błędy OBD: Profesjonalna instalacja nie generuje żadnych błędów w komputerze pokładowym pojazdu.
+
+2. Formularz i Generator PDF (Wzór Techniczny):
+
+Brak podpisów: Całkowicie pomiń sekcję podpisów klienta i montera (zarówno w UI, jak i w PDF).
+
+Układ PDF:
+
+Nagłówek: Lewa strona: logo AutoSafe. Prawa strona (pionowo): Data (z dopiskiem 'r.'), Nr zlecenia, Realizujący, Lokalizacja.
+
+Tytuł: PROTOKÓŁ ODBIORU PRAC
+
+Sekcja 1. Dane klienta: Nazwa/Imię i nazwisko, Adres.
+
+Sekcja 2. Dane pojazdu: Marka, Model, Nr Rejestracyjny, Rok produkcji, VIN, Przebieg, Rodzaj paliwa.
+
+Sekcja 3. Komponenty systemu: Jeśli wybrano 'immobilizer-can', pokaż listę modeli: Seo Cani U333_76_10, Seo Cani U335_76_10, Seo Canblu U335_77_12 z 2 brelokami, Seo Canblu U335_77_A1 z 2 brelokami, Seo Canblu U335_77_A2 z 2 brelokami, Seo Canblu U335_77_A2, Seo Cani U122_50_05, Seo Cani U122 50 10. Dodaj pole 'Nr fabryczny' oraz stałe, nieedytowalne pole 'Nr homologacji: E20'.
+
+Sekcja 4. Testy funkcjonalne: Tabela (TAK/NIE) dla: 'Rozbrojenie immobilizera brelokiem', 'Rozbrojenie immobilizera kodem PIN', 'Sprawdzenie trybu serwisowego', 'Brak błędów OBD'.
+
+Sekcja 5. Zdjęcia: Miejsca na wgrane zdjęcia (Przód pojazdu z nr rej., Numer VIN, Zegary po uruchomieniu).
+
+Sekcja 6. Dane Serwisowe (Tylko dla archiwum AutoSafe): Miejsce montażu urządzenia, Lokalizacja anteny GPS, Uwagi instalacyjne, Link do wideo z montażu.
+
+Stopka: AutoSafe | NIP | www.autosafe.pl
+
+3. Wymagania Techniczne i Logika:
+
+Kodowanie znaków: Użyj odpowiedniej czcionki dla biblioteki PDF (np. Roboto), aby polskie znaki (ą, ć, ę, ł, ń, ó, ś, ź, ż) generowały się bez błędów. Upewnij się, że słowo to 'PROTOKÓŁ MONTAŻU' (a nie 'PROTOKÓA MONTA{U').
+
+Nazewnictwo plików PDF: Ustaw automatyczne generowanie nazwy w formacie: Data_NumerRejestracyjny_Nazwisko.pdf.
+
+Design System (UI): Zastosuj Dark Mode z profesjonalnymi błękitnymi akcentami (Primary). Wszystkie przyciski (np. Generuj PDF) muszą mieć zaokrąglone rogi, hover effects oraz intuicyjne ikony (Lucide React: ikona pliku PDF, ikona aparatu przy polach zdjęć). Elementy nawigacji i akordeony FAQ muszą wyglądać spójnie.

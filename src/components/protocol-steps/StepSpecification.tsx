@@ -1,5 +1,7 @@
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
 
 interface StepSpecificationProps {
   data: any;
@@ -40,7 +42,13 @@ const StepSpecification = ({ data, onDataChange }: StepSpecificationProps) => {
         <Label htmlFor="security_type" className="text-slate-300 mb-2 block">
           Typ zabezpieczenia
         </Label>
-        <Select value={data.security_type} onValueChange={(value) => onDataChange("security_type", value)}>
+        <Select
+          value={data.security_type}
+          onValueChange={(value) => {
+            onDataChange("security_type", value);
+            onDataChange("device_model", "");
+          }}
+        >
           <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
             <SelectValue placeholder="Wybierz typ zabezpieczenia" />
           </SelectTrigger>
@@ -54,41 +62,57 @@ const StepSpecification = ({ data, onDataChange }: StepSpecificationProps) => {
         </Select>
       </div>
 
-      <div>
-        <Label htmlFor="device_model" className="text-slate-300 mb-2 block">
-          Model urządzenia
-        </Label>
-        <Select value={data.device_model} onValueChange={(value) => onDataChange("device_model", value)}>
-          <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
-            <SelectValue placeholder="Wybierz model urządzenia" />
-          </SelectTrigger>
-          <SelectContent className="bg-slate-800 border-slate-600">
-            {deviceModels.map((model) => (
-              <SelectItem key={model.value} value={model.value} className="text-white">
-                {model.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      <div>
-        <Label htmlFor="homologation_number" className="text-slate-300 mb-2 block">
-          Nr homologacji
-        </Label>
-        <div className="bg-slate-700 border border-slate-600 rounded-md px-3 py-2 text-slate-300">
-          {data.homologation_number || "E20"}
+      {data.security_type && (
+        <div>
+          <Label htmlFor="device_model" className="text-slate-300 mb-2 block">
+            Model urządzenia
+          </Label>
+          <Select value={data.device_model} onValueChange={(value) => onDataChange("device_model", value)}>
+            <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
+              <SelectValue placeholder="Wybierz model urządzenia" />
+            </SelectTrigger>
+            <SelectContent className="bg-slate-800 border-slate-600">
+              {deviceModels.map((model) => (
+                <SelectItem key={model.value} value={model.value} className="text-white">
+                  {model.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
-        <p className="text-xs text-slate-500 mt-1">Pole stałe - wartość domyślna: E20</p>
+      )}
+
+      <div>
+        <Label htmlFor="serial_number" className="text-slate-300 mb-2 block">
+          Nr fabryczny
+        </Label>
+        <Input
+          id="serial_number"
+          value={data.serial_number}
+          onChange={(e) => onDataChange("serial_number", e.target.value)}
+          placeholder="Numer seryjny urządzenia"
+          className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-500 font-mono"
+        />
       </div>
 
-      <div className="bg-blue-950/30 border border-blue-900/50 rounded-lg p-4">
-        <p className="text-sm text-blue-300">
-          {isImmobilizer
-            ? "Wybrano Immobilizer CAN - dostępne są modele Seo Cani dla tego typu zabezpieczenia."
-            : "Wybierz typ zabezpieczenia odpowiadający instalowanemu urządzeniu."}
-        </p>
+      <div>
+        <Label className="text-slate-300 mb-2 block">Nr homologacji</Label>
+        <div className="flex items-center gap-3 bg-slate-700/50 border border-slate-600 rounded-md px-4 py-2.5">
+          <span className="text-white font-mono font-semibold">E20</span>
+          <Badge variant="outline" className="border-blue-500/50 text-blue-400 text-xs">
+            Stała wartość
+          </Badge>
+        </div>
+        <p className="text-xs text-slate-500 mt-1">Pole nieedytowalne — homologacja obowiązuje dla wszystkich urządzeń</p>
       </div>
+
+      {isImmobilizer && (
+        <div className="bg-blue-950/30 border border-blue-900/50 rounded-lg p-4">
+          <p className="text-sm text-blue-300">
+            Wybrano Immobilizer CAN — dostępne są modele Seo Cani dla tego typu zabezpieczenia.
+          </p>
+        </div>
+      )}
     </div>
   );
 };

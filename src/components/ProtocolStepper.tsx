@@ -1,35 +1,43 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, FileText } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import StepIdentification from "./protocol-steps/StepIdentification";
 import StepSpecification from "./protocol-steps/StepSpecification";
 import StepServiceData from "./protocol-steps/StepServiceData";
 import StepTestsAndAcceptance from "./protocol-steps/StepTestsAndAcceptance";
+import { toast } from "sonner";
 
 interface ProtocolData {
+  order_number: string;
+  technician: string;
+  location: string;
   client_name: string;
+  client_address: string;
   vehicle_brand: string;
   vehicle_model: string;
   vehicle_year: string;
   vehicle_vin: string;
   vehicle_registration: string;
   vehicle_mileage: string;
+  fuel_type: string;
   vehicle_photo_front: string;
   vehicle_photo_vin: string;
+  vehicle_photo_gauges: string;
   security_type: string;
   device_model: string;
+  serial_number: string;
   homologation_number: string;
   control_unit_location: string;
+  gps_antenna_location: string;
   installation_connection_point: string;
   service_notes: string;
+  installation_video_url: string;
   test_disarm_key: boolean | null;
   test_disarm_pin: boolean | null;
   test_service_mode: boolean | null;
-  photos: string[];
-  video: string;
-  signature: string;
+  test_obd: boolean | null;
 }
 
 interface ProtocolStepperProps {
@@ -37,55 +45,60 @@ interface ProtocolStepperProps {
 }
 
 const steps = [
-  { id: 1, title: "Identyfikacja", description: "Dane pojazdu i klienta" },
+  { id: 1, title: "Identyfikacja", description: "Dane zlecenia, klienta i pojazdu" },
   { id: 2, title: "Specyfikacja", description: "Typ zabezpieczenia i urządzenie" },
-  { id: 3, title: "Dane Serwisowe", description: "Informacje poufne" },
-  { id: 4, title: "Testy i Odbiór", description: "Weryfikacja i podpis" },
+  { id: 3, title: "Dane Serwisowe", description: "Informacje poufne (archiwum)" },
+  { id: 4, title: "Testy i Odbiór", description: "Wyniki testów i zdjęcia" },
 ];
 
 const ProtocolStepper = ({ onBack }: ProtocolStepperProps) => {
   const [currentStep, setCurrentStep] = useState(1);
+  const [isGenerating, setIsGenerating] = useState(false);
   const [data, setData] = useState<ProtocolData>({
+    order_number: "",
+    technician: "",
+    location: "",
     client_name: "",
+    client_address: "",
     vehicle_brand: "",
     vehicle_model: "",
     vehicle_year: "",
     vehicle_vin: "",
     vehicle_registration: "",
     vehicle_mileage: "",
+    fuel_type: "",
     vehicle_photo_front: "",
     vehicle_photo_vin: "",
+    vehicle_photo_gauges: "",
     security_type: "",
     device_model: "",
+    serial_number: "",
     homologation_number: "E20",
     control_unit_location: "",
+    gps_antenna_location: "",
     installation_connection_point: "",
     service_notes: "",
+    installation_video_url: "",
     test_disarm_key: null,
     test_disarm_pin: null,
     test_service_mode: null,
-    photos: [],
-    video: "",
-    signature: "",
+    test_obd: null,
   });
 
   const handleNext = () => {
-    if (currentStep < steps.length) {
-      setCurrentStep(currentStep + 1);
-    }
+    if (currentStep < steps.length) setCurrentStep(currentStep + 1);
   };
 
   const handlePrev = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
-    }
+    if (currentStep > 1) setCurrentStep(currentStep - 1);
   };
 
   const handleDataChange = (field: keyof ProtocolData, value: any) => {
-    setData(prev => ({ ...prev, [field]: value }));
+    setData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleGeneratePDF = async (isArchive: boolean = false) => {
+    setIsGenerating(true);
     try {
       const res = await fetch("/api/generate-protocol-pdf", {
         method: "POST",
@@ -93,19 +106,23 @@ const ProtocolStepper = ({ onBack }: ProtocolStepperProps) => {
         body: JSON.stringify({ protocolData: data, isArchive }),
       });
 
-      if (!res.ok) {
-        throw new Error("Failed to generate PDF");
-      }
+      if (!res.ok) throw new Error("Failed to generate PDF");
 
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `protokol_${data.vehicle_registration}_${new Date().toISOString().slice(0, 10)}.pdf`;
+      const lastName = (data.client_name || "Klient").split(" ").pop() || "Klient";
+      const dateStr = new Date().toISOString().slice(0, 10);
+      a.download = `${dateStr}_${data.vehicle_registration || "BEZ_REJ"}_${lastName}.pdf`;
       a.click();
       URL.revokeObjectURL(url);
+      toast.success(isArchive ? "Archiwum wygenerowane!" : "Protokół dla klienta wygenerowany!");
     } catch (error) {
       console.error("PDF generation error:", error);
+      toast.error("Błąd generowania PDF. Spróbuj ponownie.");
+    } finally {
+      setIsGenerating(false);
     }
   };
 
@@ -131,10 +148,14 @@ const ProtocolStepper = ({ onBack }: ProtocolStepperProps) => {
         <div className="max-w-4xl mx-auto">
           <div className="mb-8 flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-white mb-1">Protokół Montażu</h1>
+              <h1 className="text-3xl font-bold text-white mb-1">Protokół Odbioru Prac</h1>
               <p className="text-slate-400">Krok {currentStep} z {steps.length}</p>
             </div>
-            <Button variant="ghost" className="text-slate-400 hover:text-white" onClick={onBack}>
+            <Button
+              variant="ghost"
+              className="text-slate-400 hover:text-white rounded-xl"
+              onClick={onBack}
+            >
               <ChevronLeft className="w-5 h-5 mr-1" />
               Powrót
             </Button>
@@ -145,19 +166,19 @@ const ProtocolStepper = ({ onBack }: ProtocolStepperProps) => {
               {steps.map((step) => (
                 <div key={step.id} className="flex-1">
                   <div
-                    className={`h-2 rounded-full transition-colors ${
+                    className={`h-2 rounded-full transition-all duration-300 ${
                       step.id <= currentStep ? "bg-blue-500" : "bg-slate-700"
                     }`}
                   />
                 </div>
               ))}
             </div>
-            <div className="flex justify-between text-sm">
+            <div className="flex justify-between text-xs mt-1">
               {steps.map((step) => (
                 <span
                   key={step.id}
-                  className={`${
-                    step.id <= currentStep ? "text-blue-400" : "text-slate-500"
+                  className={`transition-colors ${
+                    step.id <= currentStep ? "text-blue-400" : "text-slate-600"
                   }`}
                 >
                   {step.title}
@@ -166,14 +187,12 @@ const ProtocolStepper = ({ onBack }: ProtocolStepperProps) => {
             </div>
           </div>
 
-          <Card className="bg-slate-800 border-slate-700 mb-8">
+          <Card className="bg-slate-800 border-slate-700 mb-6 rounded-2xl">
             <CardHeader>
               <CardTitle className="text-white text-xl">{steps[currentStep - 1].title}</CardTitle>
               <CardDescription className="text-slate-400">{steps[currentStep - 1].description}</CardDescription>
             </CardHeader>
-            <CardContent className="min-h-96">
-              {renderStep()}
-            </CardContent>
+            <CardContent className="min-h-64">{renderStep()}</CardContent>
           </Card>
 
           <div className="flex gap-3 justify-between">
@@ -181,7 +200,7 @@ const ProtocolStepper = ({ onBack }: ProtocolStepperProps) => {
               variant="outline"
               onClick={handlePrev}
               disabled={currentStep === 1}
-              className="border-slate-600 text-slate-300 hover:bg-slate-700"
+              className="border-slate-600 text-slate-300 hover:bg-slate-700 rounded-xl"
             >
               <ChevronLeft className="w-4 h-4 mr-2" />
               Wstecz
@@ -191,21 +210,25 @@ const ProtocolStepper = ({ onBack }: ProtocolStepperProps) => {
               <div className="flex gap-2">
                 <Button
                   onClick={() => handleGeneratePDF(false)}
-                  className="bg-blue-600 hover:bg-blue-700"
+                  disabled={isGenerating}
+                  className="bg-blue-600 hover:bg-blue-700 rounded-xl"
                 >
-                  Protokół dla klienta
+                  <FileText className="w-4 h-4 mr-2" />
+                  {isGenerating ? "Generowanie..." : "Protokół dla klienta"}
                 </Button>
                 <Button
                   onClick={() => handleGeneratePDF(true)}
-                  className="bg-amber-600 hover:bg-amber-700"
+                  disabled={isGenerating}
+                  className="bg-amber-600 hover:bg-amber-700 rounded-xl"
                 >
-                  Archiwum (z danymi)
+                  <FileText className="w-4 h-4 mr-2" />
+                  {isGenerating ? "Generowanie..." : "Archiwum (z danymi)"}
                 </Button>
               </div>
             ) : (
               <Button
                 onClick={handleNext}
-                className="bg-blue-600 hover:bg-blue-700"
+                className="bg-blue-600 hover:bg-blue-700 rounded-xl"
               >
                 Dalej
                 <ChevronRight className="w-4 h-4 ml-2" />
