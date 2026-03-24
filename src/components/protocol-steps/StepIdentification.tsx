@@ -22,50 +22,6 @@ const StepIdentification = ({ data, onDataChange }: StepIdentificationProps) => 
     <div className="space-y-6">
       <div className="rounded-xl border border-slate-700/60 bg-slate-800/40 p-5 space-y-4">
         <h3 className="text-sm font-semibold text-blue-400 uppercase tracking-wider">
-          Dane zlecenia
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <Label htmlFor="order_number" className="text-slate-300 mb-2 block text-sm">
-              Nr zlecenia
-            </Label>
-            <Input
-              id="order_number"
-              value={data.order_number}
-              onChange={(e) => onDataChange("order_number", e.target.value)}
-              placeholder="np. ZL/2024/001"
-              className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-500"
-            />
-          </div>
-          <div>
-            <Label htmlFor="technician" className="text-slate-300 mb-2 block text-sm">
-              Realizujący
-            </Label>
-            <Input
-              id="technician"
-              value={data.technician}
-              onChange={(e) => onDataChange("technician", e.target.value)}
-              placeholder="Imię i nazwisko montera"
-              className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-500"
-            />
-          </div>
-          <div>
-            <Label htmlFor="location" className="text-slate-300 mb-2 block text-sm">
-              Lokalizacja
-            </Label>
-            <Input
-              id="location"
-              value={data.location}
-              onChange={(e) => onDataChange("location", e.target.value)}
-              placeholder="np. Warszawa"
-              className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-500"
-            />
-          </div>
-        </div>
-      </div>
-
-      <div className="rounded-xl border border-slate-700/60 bg-slate-800/40 p-5 space-y-4">
-        <h3 className="text-sm font-semibold text-blue-400 uppercase tracking-wider">
           Dane klienta
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

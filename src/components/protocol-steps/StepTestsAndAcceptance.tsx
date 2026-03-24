@@ -1,6 +1,5 @@
 import { useRef } from "react";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Camera, Upload, Trash2 } from "lucide-react";
 
@@ -13,7 +12,6 @@ const tests = [
   { field: "test_disarm_key", label: "Rozbrojenie immobilizera brelokiem" },
   { field: "test_disarm_pin", label: "Rozbrojenie immobilizera kodem PIN" },
   { field: "test_service_mode", label: "Sprawdzenie trybu serwisowego" },
-  { field: "test_obd", label: "Brak błędów OBD" },
 ];
 
 const photoSlots = [
@@ -113,6 +111,7 @@ const StepTestsAndAcceptance = ({ data, onDataChange }: StepTestsAndAcceptancePr
                   ref={ref}
                   type="file"
                   accept="image/*"
+                  capture="environment"
                   className="hidden"
                   onChange={(e) => {
                     if (e.target.files?.[0]) {
