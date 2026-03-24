@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
@@ -58,6 +59,20 @@ const StepServiceData = ({ data, onDataChange }: StepServiceDataProps) => {
                 className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-500"
               />
               <p className="text-xs text-slate-500 mt-1">Sposób podłączenia urządzenia do systemu pojazdu</p>
+            </div>
+
+            <div>
+              <Label htmlFor="service_notes" className="text-slate-300 mb-2 block">
+                Uwagi serwisowe
+              </Label>
+              <Textarea
+                id="service_notes"
+                value={data.service_notes}
+                onChange={(e) => onDataChange("service_notes", e.target.value)}
+                placeholder="Wpisz szczegółowe uwagi dotyczące montażu, konfiguracji lub specjalnych warunków..."
+                className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-500 min-h-[120px]"
+              />
+              <p className="text-xs text-slate-500 mt-1">Dodatkowe informacje dla archiwum firmy</p>
             </div>
           </div>
         )}

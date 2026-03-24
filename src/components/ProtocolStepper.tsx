@@ -12,18 +12,23 @@ interface ProtocolData {
   client_name: string;
   vehicle_brand: string;
   vehicle_model: string;
+  vehicle_year: string;
   vehicle_vin: string;
   vehicle_registration: string;
   vehicle_mileage: string;
+  vehicle_photo_front: string;
+  vehicle_photo_vin: string;
   security_type: string;
   device_model: string;
-  imei_id: string;
+  homologation_number: string;
   control_unit_location: string;
   installation_connection_point: string;
-  gps_working: boolean;
-  blocking_working: boolean;
-  no_obd_errors: boolean;
+  service_notes: string;
+  test_disarm_key: boolean | null;
+  test_disarm_pin: boolean | null;
+  test_service_mode: boolean | null;
   photos: string[];
+  video: string;
   signature: string;
 }
 
@@ -44,18 +49,23 @@ const ProtocolStepper = ({ onBack }: ProtocolStepperProps) => {
     client_name: "",
     vehicle_brand: "",
     vehicle_model: "",
+    vehicle_year: "",
     vehicle_vin: "",
     vehicle_registration: "",
     vehicle_mileage: "",
+    vehicle_photo_front: "",
+    vehicle_photo_vin: "",
     security_type: "",
     device_model: "",
-    imei_id: "",
+    homologation_number: "E20",
     control_unit_location: "",
     installation_connection_point: "",
-    gps_working: false,
-    blocking_working: false,
-    no_obd_errors: false,
+    service_notes: "",
+    test_disarm_key: null,
+    test_disarm_pin: null,
+    test_service_mode: null,
     photos: [],
+    video: "",
     signature: "",
   });
 

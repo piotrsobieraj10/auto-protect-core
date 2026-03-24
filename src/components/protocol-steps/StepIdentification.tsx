@@ -1,5 +1,7 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Upload, X } from "lucide-react";
+import { useRef } from "react";
 
 interface StepIdentificationProps {
   data: any;
@@ -7,6 +9,17 @@ interface StepIdentificationProps {
 }
 
 const StepIdentification = ({ data, onDataChange }: StepIdentificationProps) => {
+  const frontFileRef = useRef<HTMLInputElement>(null);
+  const vinFileRef = useRef<HTMLInputElement>(null);
+
+  const handlePhotoUpload = (field: string, file: File) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      onDataChange(field, e.target?.result);
+    };
+    reader.readAsDataURL(file);
+  };
+
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -50,6 +63,20 @@ const StepIdentification = ({ data, onDataChange }: StepIdentificationProps) => 
         </div>
 
         <div>
+          <Label htmlFor="vehicle_year" className="text-slate-300 mb-2 block">
+            Rocznik pojazdu
+          </Label>
+          <Input
+            id="vehicle_year"
+            type="number"
+            value={data.vehicle_year}
+            onChange={(e) => onDataChange("vehicle_year", e.target.value)}
+            placeholder="np. 2020"
+            className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-500"
+          />
+        </div>
+
+        <div>
           <Label htmlFor="vehicle_vin" className="text-slate-300 mb-2 block">
             Numer VIN (17 znaków)
           </Label>
@@ -88,6 +115,84 @@ const StepIdentification = ({ data, onDataChange }: StepIdentificationProps) => 
             onChange={(e) => onDataChange("vehicle_mileage", e.target.value)}
             placeholder="np. 45000"
             className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-500"
+          />
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        <div>
+          <Label className="text-slate-300 mb-2 block">Zdjęcie przodu pojazdu z nr rej.</Label>
+          {data.vehicle_photo_front ? (
+            <div className="relative w-full max-w-sm">
+              <img
+                src={data.vehicle_photo_front}
+                alt="Przód pojazdu"
+                className="w-full h-32 object-cover rounded-lg border border-blue-500"
+              />
+              <button
+                onClick={() => onDataChange("vehicle_photo_front", "")}
+                className="absolute top-1 right-1 bg-red-600 rounded-full p-1 hover:bg-red-700"
+              >
+                <X className="w-4 h-4 text-white" />
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => frontFileRef.current?.click()}
+              className="w-full border-2 border-dashed border-slate-600 rounded-lg p-4 text-center hover:border-blue-500 transition-colors"
+            >
+              <Upload className="w-6 h-6 text-slate-400 mx-auto mb-2" />
+              <p className="text-sm text-slate-400">Kliknij, aby dodać zdjęcie</p>
+            </button>
+          )}
+          <input
+            ref={frontFileRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => {
+              if (e.target.files?.[0]) {
+                handlePhotoUpload("vehicle_photo_front", e.target.files[0]);
+              }
+            }}
+          />
+        </div>
+
+        <div>
+          <Label className="text-slate-300 mb-2 block">Zdjęcie numeru VIN</Label>
+          {data.vehicle_photo_vin ? (
+            <div className="relative w-full max-w-sm">
+              <img
+                src={data.vehicle_photo_vin}
+                alt="Numer VIN"
+                className="w-full h-32 object-cover rounded-lg border border-blue-500"
+              />
+              <button
+                onClick={() => onDataChange("vehicle_photo_vin", "")}
+                className="absolute top-1 right-1 bg-red-600 rounded-full p-1 hover:bg-red-700"
+              >
+                <X className="w-4 h-4 text-white" />
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => vinFileRef.current?.click()}
+              className="w-full border-2 border-dashed border-slate-600 rounded-lg p-4 text-center hover:border-blue-500 transition-colors"
+            >
+              <Upload className="w-6 h-6 text-slate-400 mx-auto mb-2" />
+              <p className="text-sm text-slate-400">Kliknij, aby dodać zdjęcie</p>
+            </button>
+          )}
+          <input
+            ref={vinFileRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => {
+              if (e.target.files?.[0]) {
+                handlePhotoUpload("vehicle_photo_vin", e.target.files[0]);
+              }
+            }}
           />
         </div>
       </div>

@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Upload, Trash2 } from "lucide-react";
 
 interface StepTestsAndAcceptanceProps {
@@ -11,7 +11,8 @@ interface StepTestsAndAcceptanceProps {
 
 const StepTestsAndAcceptance = ({ data, onDataChange }: StepTestsAndAcceptanceProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const photosFileRef = useRef<HTMLInputElement>(null);
+  const videoFileRef = useRef<HTMLInputElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
 
   const startDrawing = (e: React.MouseEvent) => {
@@ -62,14 +63,25 @@ const StepTestsAndAcceptance = ({ data, onDataChange }: StepTestsAndAcceptancePr
     }
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
       const newPhotos = Array.from(files).map(file => URL.createObjectURL(file));
       onDataChange("photos", [...data.photos, ...newPhotos]);
     }
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
+    if (photosFileRef.current) {
+      photosFileRef.current.value = "";
+    }
+  };
+
+  const handleVideoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const videoUrl = URL.createObjectURL(file);
+      onDataChange("video", videoUrl);
+    }
+    if (videoFileRef.current) {
+      videoFileRef.current.value = "";
     }
   };
 
@@ -82,69 +94,121 @@ const StepTestsAndAcceptance = ({ data, onDataChange }: StepTestsAndAcceptancePr
     <div className="space-y-6">
       <div className="space-y-4">
         <Label className="text-slate-300 text-base font-semibold block">
-          Checklista sprawności
+          Wyniki testów funkcjonalnych
         </Label>
 
         <div className="space-y-3">
-          <div className="flex items-center gap-3 p-3 bg-slate-700/50 rounded-lg hover:bg-slate-700/70 transition-colors">
-            <Checkbox
-              id="gps_working"
-              checked={data.gps_working}
-              onCheckedChange={(checked) => onDataChange("gps_working", checked)}
-              className="border-slate-500 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500"
-            />
-            <Label htmlFor="gps_working" className="text-slate-300 cursor-pointer flex-1">
-              GPS pracuje poprawnie
-            </Label>
+          <div>
+            <Label className="text-slate-300 mb-2 block text-sm">Rozbrojenie immobilizera brelokiem</Label>
+            <Select
+              value={data.test_disarm_key === null ? "" : String(data.test_disarm_key)}
+              onValueChange={(value) => onDataChange("test_disarm_key", value === "true")}
+            >
+              <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
+                <SelectValue placeholder="Wybierz wynik" />
+              </SelectTrigger>
+              <SelectContent className="bg-slate-800 border-slate-600">
+                <SelectItem value="true" className="text-white">Tak</SelectItem>
+                <SelectItem value="false" className="text-white">Nie</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
-          <div className="flex items-center gap-3 p-3 bg-slate-700/50 rounded-lg hover:bg-slate-700/70 transition-colors">
-            <Checkbox
-              id="blocking_working"
-              checked={data.blocking_working}
-              onCheckedChange={(checked) => onDataChange("blocking_working", checked)}
-              className="border-slate-500 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500"
-            />
-            <Label htmlFor="blocking_working" className="text-slate-300 cursor-pointer flex-1">
-              Blokada paliwa pracuje poprawnie
-            </Label>
+          <div>
+            <Label className="text-slate-300 mb-2 block text-sm">Rozbrojenie immobilizera kodem PIN</Label>
+            <Select
+              value={data.test_disarm_pin === null ? "" : String(data.test_disarm_pin)}
+              onValueChange={(value) => onDataChange("test_disarm_pin", value === "true")}
+            >
+              <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
+                <SelectValue placeholder="Wybierz wynik" />
+              </SelectTrigger>
+              <SelectContent className="bg-slate-800 border-slate-600">
+                <SelectItem value="true" className="text-white">Tak</SelectItem>
+                <SelectItem value="false" className="text-white">Nie</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
-          <div className="flex items-center gap-3 p-3 bg-slate-700/50 rounded-lg hover:bg-slate-700/70 transition-colors">
-            <Checkbox
-              id="no_obd_errors"
-              checked={data.no_obd_errors}
-              onCheckedChange={(checked) => onDataChange("no_obd_errors", checked)}
-              className="border-slate-500 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500"
-            />
-            <Label htmlFor="no_obd_errors" className="text-slate-300 cursor-pointer flex-1">
-              Brak błędów OBD
-            </Label>
+          <div>
+            <Label className="text-slate-300 mb-2 block text-sm">Sprawdzenie trybu serwisowego</Label>
+            <Select
+              value={data.test_service_mode === null ? "" : String(data.test_service_mode)}
+              onValueChange={(value) => onDataChange("test_service_mode", value === "true")}
+            >
+              <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
+                <SelectValue placeholder="Wybierz wynik" />
+              </SelectTrigger>
+              <SelectContent className="bg-slate-800 border-slate-600">
+                <SelectItem value="true" className="text-white">Tak</SelectItem>
+                <SelectItem value="false" className="text-white">Nie</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
       </div>
 
       <div className="space-y-3">
         <Label className="text-slate-300 text-base font-semibold block">
-          Zdjęcia (opcjonalnie)
+          Film z lokalizacją urządzenia (opcjonalnie)
+        </Label>
+        {data.video ? (
+          <div className="relative">
+            <video
+              src={data.video}
+              controls
+              className="w-full rounded-lg border border-blue-500 max-h-64"
+            />
+            <Button
+              size="sm"
+              variant="destructive"
+              className="absolute top-2 right-2"
+              onClick={() => onDataChange("video", "")}
+            >
+              <Trash2 className="w-3 h-3" />
+            </Button>
+          </div>
+        ) : (
+          <Button
+            type="button"
+            variant="outline"
+            className="border-slate-600 text-slate-300 hover:bg-slate-700"
+            onClick={() => videoFileRef.current?.click()}
+          >
+            <Upload className="w-4 h-4 mr-2" />
+            Dodaj film
+          </Button>
+        )}
+        <input
+          ref={videoFileRef}
+          type="file"
+          accept="video/*"
+          className="hidden"
+          onChange={handleVideoUpload}
+        />
+      </div>
+
+      <div className="space-y-3">
+        <Label className="text-slate-300 text-base font-semibold block">
+          Zdjęcia montażowe (opcjonalnie)
         </Label>
         <div className="flex gap-2">
           <Button
             type="button"
             variant="outline"
             className="border-slate-600 text-slate-300 hover:bg-slate-700"
-            onClick={() => fileInputRef.current?.click()}
+            onClick={() => photosFileRef.current?.click()}
           >
             <Upload className="w-4 h-4 mr-2" />
             Dodaj zdjęcia
           </Button>
           <input
-            ref={fileInputRef}
+            ref={photosFileRef}
             type="file"
             multiple
             accept="image/*"
             className="hidden"
-            onChange={handleFileUpload}
+            onChange={handlePhotoUpload}
           />
         </div>
 

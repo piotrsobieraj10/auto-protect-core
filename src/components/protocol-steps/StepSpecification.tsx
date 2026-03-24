@@ -1,4 +1,3 @@
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
@@ -14,14 +13,27 @@ const securityTypes = [
   { value: "combined", label: "System złożony" },
 ];
 
-const deviceModels = [
-  { value: "model-a1", label: "Model A1" },
-  { value: "model-a2", label: "Model A2" },
-  { value: "model-pro", label: "Model Pro" },
-  { value: "model-smart", label: "Model Smart" },
+const caniModels = [
+  { value: "seo-cani-u333-76-10", label: "Seo Cani U333_76_10" },
+  { value: "seo-cani-u335-76-10", label: "Seo Cani U335_76_10" },
+  { value: "seo-canblu-u335-77-12", label: "Seo Canblu U335_77_12 z 2 brelokami" },
+  { value: "seo-canblu-u335-77-a1", label: "Seo Canblu U335_77_A1 z 2 brelokami" },
+  { value: "seo-canblu-u335-77-a2-2", label: "Seo Canblu U335_77_A2 z 2 brelokami" },
+  { value: "seo-canblu-u335-77-a2", label: "Seo Canblu U335_77_A2" },
+  { value: "seo-cani-u122-50-05", label: "Seo Cani U122_50_05" },
+  { value: "seo-cani-u122-50-10", label: "Seo Cani U122_50_10" },
+];
+
+const otherModels = [
+  { value: "gps-model-pro", label: "GPS Model Pro" },
+  { value: "gps-model-smart", label: "GPS Model Smart" },
+  { value: "fuel-block-v1", label: "Fuel Block V1" },
 ];
 
 const StepSpecification = ({ data, onDataChange }: StepSpecificationProps) => {
+  const isImmobilizer = data.security_type === "immobilizer-can";
+  const deviceModels = isImmobilizer ? caniModels : otherModels;
+
   return (
     <div className="space-y-6">
       <div>
@@ -61,22 +73,20 @@ const StepSpecification = ({ data, onDataChange }: StepSpecificationProps) => {
       </div>
 
       <div>
-        <Label htmlFor="imei_id" className="text-slate-300 mb-2 block">
-          Numer IMEI/ID urządzenia
+        <Label htmlFor="homologation_number" className="text-slate-300 mb-2 block">
+          Nr homologacji
         </Label>
-        <Input
-          id="imei_id"
-          value={data.imei_id}
-          onChange={(e) => onDataChange("imei_id", e.target.value)}
-          placeholder="np. 359072096481066"
-          className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-500 font-mono"
-        />
-        <p className="text-xs text-slate-500 mt-1">Unikalny identyfikator urządzenia</p>
+        <div className="bg-slate-700 border border-slate-600 rounded-md px-3 py-2 text-slate-300">
+          {data.homologation_number || "E20"}
+        </div>
+        <p className="text-xs text-slate-500 mt-1">Pole stałe - wartość domyślna: E20</p>
       </div>
 
       <div className="bg-blue-950/30 border border-blue-900/50 rounded-lg p-4">
         <p className="text-sm text-blue-300">
-          Wpisy techniczne: Wybierz typ zabezpieczenia odpowiadający instalowanemu urządzeniu. Model urządzenia musi być dostępny w bazie AutoSafe.
+          {isImmobilizer
+            ? "Wybrano Immobilizer CAN - dostępne są modele Seo Cani dla tego typu zabezpieczenia."
+            : "Wybierz typ zabezpieczenia odpowiadający instalowanemu urządzeniu."}
         </p>
       </div>
     </div>
