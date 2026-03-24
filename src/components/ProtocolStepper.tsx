@@ -86,21 +86,12 @@ const ProtocolStepper = ({ onBack }: ProtocolStepperProps) => {
   };
 
   const handleGeneratePDF = async (isArchive: boolean = false) => {
-    const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
-    const anonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
-
     try {
-      const res = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/generate-protocol-pdf`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${anonKey}`,
-          },
-          body: JSON.stringify({ protocolData: data, isArchive }),
-        }
-      );
+      const res = await fetch("/api/generate-protocol-pdf", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ protocolData: data, isArchive }),
+      });
 
       if (!res.ok) {
         throw new Error("Failed to generate PDF");
