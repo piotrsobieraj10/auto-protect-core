@@ -8,12 +8,9 @@ import Navbar from "@/components/Navbar";
 import ProtocolStepper from "@/components/ProtocolStepper";
 
 const PANEL_PASSWORD = "adminn";
-const SESSION_KEY = "autosafe_panel_auth";
 
 const Dashboard = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(
-    () => sessionStorage.getItem(SESSION_KEY) === "true"
-  );
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showProtocol, setShowProtocol] = useState(false);
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
@@ -21,7 +18,6 @@ const Dashboard = () => {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (password === PANEL_PASSWORD) {
-      sessionStorage.setItem(SESSION_KEY, "true");
       setIsAuthenticated(true);
       setError(false);
     } else {
