@@ -20,10 +20,14 @@ app.use(express.json({ limit: "25mb" }));
 
 // ── Model label lookup ────────────────────────────────────────────────────────
 const MODEL_LABELS: Record<string, string> = {
-  "seo-cani-u333-76-10": "Seo Cani U333_76_10",
-  "seo-cani-u335-76-10": "Seo Cani U335_76_10",
-  "seo-canblu-u335-77-12": "Seo Canblu U335_77_12 z 2 brelokami",
-  "seo-cani-u122-50-10": "Seo Cani U122_50_10",
+  "seo-cani-u333-76-10":    "Seo Cani U333_76_10",
+  "seo-cani-u335-76-10":    "Seo Cani U335_76_10",
+  "seo-canblu-u335-77-12":  "Seo Canblu U335_77_12 z 2 brelokami",
+  "seo-canblu-u335-77-a1":  "Seo Canblu U335_77_A1 z 2 brelokami",
+  "seo-canblu-u335-77-a2-2":"Seo Canblu U335_77_A2 z 2 brelokami",
+  "seo-canblu-u335-77-a2":  "Seo Canblu U335_77_A2",
+  "seo-cani-u122-50-05":    "Seo Cani U122_50_05",
+  "seo-cani-u122-50-10":    "Seo Cani U122_50_10",
   "immobilizer-can": "Immobilizer CAN",
   "gps": "GPS",
 };
@@ -31,73 +35,64 @@ const MODEL_LABELS: Record<string, string> = {
 function getLabel(v: string): string { return MODEL_LABELS[v] || v || "—"; }
 function str(v: any): string { return (v !== undefined && v !== null && v !== "") ? String(v) : "—"; }
 
-// ── PDF colour palette (light / print-friendly) ───────────────────────────────
+// ── Pure B&W colour palette ───────────────────────────────────────────────────
 const C = {
-  white:      "#ffffff",
-  pageBg:     "#f9fafb",
-  headerBg:   "#1e3a5f",
-  headerText: "#ffffff",
-  accentBlue: "#1d4ed8",
-  sectionBg:  "#eff6ff",
-  sectionText:"#1e40af",
-  rowOdd:     "#f8fafc",
-  rowEven:    "#eef2ff",
-  label:      "#64748b",
-  value:      "#1e293b",
-  border:     "#cbd5e1",
-  borderDark: "#94a3b8",
-  green:      "#16a34a",
-  red:        "#dc2626",
-  muted:      "#94a3b8",
-  amber:      "#92400e",
-  amberBg:    "#fef3c7",
-  amberBorder:"#f59e0b",
-  footerBg:   "#f1f5f9",
-  footerText: "#64748b",
+  white:   "#ffffff",
+  black:   "#000000",
+  dark:    "#1a1a1a",
+  mid:     "#444444",
+  label:   "#666666",
+  border:  "#cccccc",
+  borderL: "#e8e8e8",
+  rowAlt:  "#f7f7f7",
+  green:   "#1a7a1a",
+  red:     "#cc0000",
+  muted:   "#999999",
 };
 
 // ── Layout helpers ────────────────────────────────────────────────────────────
+function rule(doc: any, y: number, x: number, w: number, thick = 0.5, color = C.border) {
+  doc.moveTo(x, y).lineTo(x + w, y).lineWidth(thick).stroke(color);
+}
+
 function sectionHeader(doc: any, title: string, y: number, x: number, w: number): number {
-  doc.rect(x, y, w, 20).fill(C.sectionBg);
-  doc.rect(x, y, 3, 20).fill(C.accentBlue);
-  doc.font(FONT_BOLD).fontSize(8).fillColor(C.sectionText);
-  doc.text(title.toUpperCase(), x + 9, y + 6, { lineBreak: false });
-  return y + 26;
+  doc.font(FONT_BOLD).fontSize(8).fillColor(C.dark);
+  doc.text(title.toUpperCase(), x, y, { lineBreak: false });
+  const textW = doc.widthOfString(title.toUpperCase());
+  doc.moveTo(x, y + 11).lineTo(x + w, y + 11).lineWidth(0.5).stroke(C.border);
+  return y + 18;
 }
 
 function dataRow(
   doc: any, label: string, value: string,
-  y: number, x: number, w: number, even: boolean
+  y: number, x: number, w: number, alt: boolean
 ): number {
   const rowH = 17;
-  doc.rect(x, y, w, rowH).fill(even ? C.rowEven : C.rowOdd);
-  doc.moveTo(x, y).lineTo(x + w, y).stroke(C.border);
-  const colW = 150;
+  const colW = 160;
+  if (alt) doc.rect(x, y, w, rowH).fill(C.rowAlt);
+  doc.moveTo(x, y).lineTo(x + w, y).lineWidth(0.3).stroke(C.borderL);
   doc.font(FONT_REGULAR).fontSize(8).fillColor(C.label);
-  doc.text(label, x + 6, y + 4.5, { width: colW - 10, lineBreak: false });
-  doc.font(FONT_REGULAR).fontSize(8.5).fillColor(C.value);
-  doc.text(value, x + colW, y + 4, { width: w - colW - 6, lineBreak: false });
+  doc.text(label, x + 5, y + 4.5, { width: colW - 8, lineBreak: false });
+  doc.font(FONT_REGULAR).fontSize(8.5).fillColor(C.dark);
+  doc.text(value, x + colW, y + 4, { width: w - colW - 5, lineBreak: false });
   return y + rowH;
 }
 
-// ── Fit image inside a box without distortion ─────────────────────────────────
+// ── Fit image inside a box (contain, no distortion, no overflow) ──────────────
 function drawImageFit(
   doc: any, dataUrl: string,
   bx: number, by: number, bw: number, bh: number
 ) {
   try {
-    const base64 = dataUrl.split(",")[1];
-    const buf = Buffer.from(base64, "base64");
-    // Draw white background for photo box
+    const buf = Buffer.from(dataUrl.split(",")[1], "base64");
     doc.rect(bx, by, bw, bh).fill(C.white).stroke(C.border);
-    // Fit image with contain mode (no distortion, no overflow)
     doc.image(buf, bx + 2, by + 2, {
       fit: [bw - 4, bh - 4],
       align: "center",
       valign: "center",
     });
   } catch {
-    doc.rect(bx, by, bw, bh).fill("#f1f5f9").stroke(C.border);
+    doc.rect(bx, by, bw, bh).fill(C.rowAlt).stroke(C.border);
     doc.font(FONT_REGULAR).fontSize(7).fillColor(C.muted);
     doc.text("Brak zdjecia", bx, by + bh / 2 - 4, { width: bw, align: "center", lineBreak: false });
   }
@@ -126,214 +121,161 @@ app.post("/api/generate-protocol-pdf", (req, res) => {
 
     const pw = doc.page.width;   // 595
     const ph = doc.page.height;  // 842
-    const mx = 36;
-    const cw = pw - 2 * mx;     // 523
+    const mx = 42;
+    const cw = pw - 2 * mx;     // 511
 
-    // ── PAGE BACKGROUND ───────────────────────────────────────────────────────
-    doc.rect(0, 0, pw, ph).fill(C.pageBg);
+    // ── WHITE PAGE ────────────────────────────────────────────────────────────
+    doc.rect(0, 0, pw, ph).fill(C.white);
 
-    // ── HEADER ────────────────────────────────────────────────────────────────
-    doc.rect(0, 0, pw, 72).fill(C.headerBg);
+    // ── HEADER (3-column, no overlap) ─────────────────────────────────────────
+    const hTop = 28;
 
-    // Brand mark — left
-    doc.font("Bold").fontSize(22).fillColor(C.white);
-    doc.text("AutoSafe", mx, 14, { lineBreak: false });
-    doc.font("Regular").fontSize(7.5).fillColor("#93c5fd");
-    doc.text("Systemy bezpieczenstwa pojazdow", mx, 40, { lineBreak: false });
-    // Thin underline below brand
-    doc.moveTo(mx, 52).lineTo(mx + 130, 52).lineWidth(0.5).stroke("#3b82f6");
+    // Left: logo mark "AS" in a box + brand name
+    doc.rect(mx, hTop, 28, 28).fill(C.white).stroke(C.dark);
+    doc.font("Bold").fontSize(11).fillColor(C.dark);
+    doc.text("AS", mx, hTop + 8, { width: 28, align: "center", lineBreak: false });
 
-    // Document label — center
-    doc.font("Bold").fontSize(12).fillColor(C.white);
-    doc.text("PROTOKOL ODBIORU PRAC", 0, 20, { align: "center", lineBreak: false });
-    doc.font("Regular").fontSize(7).fillColor("#93c5fd");
-    doc.text(isArchive ? "WERSJA ARCHIWALNA — POUFNE" : "Dokument dla klienta", 0, 36, { align: "center", lineBreak: false });
+    doc.font("Bold").fontSize(16).fillColor(C.dark);
+    doc.text("AutoSafe", mx + 34, hTop + 2, { lineBreak: false });
+    doc.font("Regular").fontSize(7.5).fillColor(C.mid);
+    doc.text("Systemy bezpieczenstwa pojazdow", mx + 34, hTop + 21, { lineBreak: false });
 
-    // Date — right column
+    // Centre: document title
+    doc.font("Bold").fontSize(11).fillColor(C.dark);
+    doc.text("PROTOKOL ODBIORU PRAC", 0, hTop + 5, { align: "center", lineBreak: false });
+    doc.font("Regular").fontSize(7).fillColor(C.label);
+    doc.text(
+      isArchive ? "WERSJA ARCHIWALNA — POUFNE" : "Dokument dla klienta",
+      0, hTop + 20, { align: "center", lineBreak: false }
+    );
+
+    // Right: date — fixed column, no overlap
     const today = new Date();
-    const df = `${today.getDate().toString().padStart(2, "0")}.${(today.getMonth() + 1).toString().padStart(2, "0")}.${today.getFullYear()} r.`;
-    doc.font("Bold").fontSize(8).fillColor("#bfdbfe");
-    doc.text("Data wystawienia:", pw - mx - 130, 18, { width: 130, lineBreak: false });
-    doc.font("Regular").fontSize(9).fillColor(C.white);
-    doc.text(df, pw - mx - 130, 30, { width: 130, lineBreak: false });
+    const df = `${today.getDate().toString().padStart(2, "0")}.${(today.getMonth() + 1).toString().padStart(2, "0")}.${today.getFullYear()}`;
+    const rightX = pw - mx - 100;
+    doc.font("Regular").fontSize(7.5).fillColor(C.label);
+    doc.text("Data wystawienia:", rightX, hTop + 4, { width: 100, lineBreak: false });
+    doc.font("Bold").fontSize(8.5).fillColor(C.dark);
+    doc.text(df, rightX, hTop + 16, { width: 100, lineBreak: false });
 
-    // Header bottom border
-    doc.rect(0, 72, pw, 2).fill(C.accentBlue);
+    // Header bottom rule (thick)
+    const hBottom = hTop + 44;
+    doc.moveTo(mx, hBottom).lineTo(mx + cw, hBottom).lineWidth(1).stroke(C.dark);
 
-    let y = 84;
+    let y = hBottom + 14;
 
     // ── 1. DANE KLIENTA ───────────────────────────────────────────────────────
     y = sectionHeader(doc, "1. Dane klienta", y, mx, cw);
     y = dataRow(doc, "Nazwa / Imie i nazwisko:", str(d.client_name), y, mx, cw, false);
     y = dataRow(doc, "Adres:", str(d.client_address), y, mx, cw, true);
-    // bottom border
-    doc.moveTo(mx, y).lineTo(mx + cw, y).stroke(C.border);
-    y += 10;
+    rule(doc, y, mx, cw, 0.5, C.border);
+    y += 12;
 
     // ── 2. DANE POJAZDU ───────────────────────────────────────────────────────
     y = sectionHeader(doc, "2. Dane pojazdu", y, mx, cw);
-
-    // Two-column layout for vehicle data
-    const halfW = (cw - 6) / 2;
-    const vLeft = [
-      ["Marka:", str(d.vehicle_brand)],
-      ["Model:", str(d.vehicle_model)],
-      ["Nr rejestracyjny:", str(d.vehicle_registration)],
-      ["Rok produkcji:", str(d.vehicle_year)],
-    ];
-    const vRight = [
-      ["VIN:", str(d.vehicle_vin)],
-      ["Przebieg:", d.vehicle_mileage ? `${d.vehicle_mileage} km` : "—"],
-      ["Rodzaj paliwa:", str(d.fuel_type)],
-      ["", ""],
-    ];
-    const vStartY = y;
-    vLeft.forEach(([l, v], i) => {
-      dataRow(doc, l, v, vStartY + i * 17, mx, halfW, i % 2 === 0);
-    });
-    vRight.forEach(([l, v], i) => {
-      if (l) dataRow(doc, l, v, vStartY + i * 17, mx + halfW + 6, halfW, i % 2 === 0);
-    });
-    y = vStartY + 4 * 17;
-    doc.moveTo(mx, y).lineTo(mx + cw, y).stroke(C.border);
-    y += 10;
+    const halfW = (cw - 8) / 2;
+    const vLeft  = [["Marka:", str(d.vehicle_brand)], ["Model:", str(d.vehicle_model)], ["Nr rejestracyjny:", str(d.vehicle_registration)], ["Rok produkcji:", str(d.vehicle_year)]];
+    const vRight = [["VIN:", str(d.vehicle_vin)], ["Przebieg:", d.vehicle_mileage ? `${d.vehicle_mileage} km` : "—"], ["Rodzaj paliwa:", str(d.fuel_type)]];
+    const colStartY = y;
+    vLeft.forEach(([l, v], i)  => dataRow(doc, l, v, colStartY + i * 17, mx, halfW, i % 2 === 0));
+    vRight.forEach(([l, v], i) => dataRow(doc, l, v, colStartY + i * 17, mx + halfW + 8, halfW, i % 2 === 0));
+    y = colStartY + 4 * 17;
+    rule(doc, y, mx, cw, 0.5, C.border);
+    y += 12;
 
     // ── 3. KOMPONENTY SYSTEMU ─────────────────────────────────────────────────
     y = sectionHeader(doc, "3. Komponenty systemu bezpieczenstwa", y, mx, cw);
     y = dataRow(doc, "Typ zabezpieczenia:", getLabel(d.security_type), y, mx, cw, false);
     y = dataRow(doc, "Model urzadzenia:", isImmobilizer ? getLabel(d.device_model) : str(d.device_model), y, mx, cw, true);
-    if (isGps) {
-      y = dataRow(doc, "Nr fabryczny:", str(d.serial_number), y, mx, cw, false);
-    }
+    if (isGps) y = dataRow(doc, "Nr fabryczny:", str(d.serial_number), y, mx, cw, false);
     y = dataRow(doc, "Nr homologacji:", "E20", y, mx, cw, isGps ? true : false);
-    doc.moveTo(mx, y).lineTo(mx + cw, y).stroke(C.border);
-    y += 10;
+    rule(doc, y, mx, cw, 0.5, C.border);
+    y += 12;
 
     // ── 4. TESTY FUNKCJONALNE ─────────────────────────────────────────────────
     y = sectionHeader(doc, "4. Testy funkcjonalne", y, mx, cw);
 
-    // Table header
-    const testColW = cw - 70;
-    doc.rect(mx, y, cw, 16).fill(C.sectionBg);
-    doc.font("Bold").fontSize(7.5).fillColor(C.sectionText);
-    doc.text("Przeprowadzony test", mx + 6, y + 4.5, { lineBreak: false });
-    doc.text("Wynik", mx + testColW + 10, y + 4.5, { width: 55, align: "center", lineBreak: false });
-    y += 16;
+    const testColW = cw - 60;
+    // table header row
+    doc.rect(mx, y, cw, 15).fill(C.rowAlt);
+    rule(doc, y, mx, cw, 0.5, C.border);
+    doc.font("Bold").fontSize(7.5).fillColor(C.mid);
+    doc.text("Przeprowadzony test", mx + 5, y + 4, { lineBreak: false });
+    doc.text("Wynik", mx + testColW + 5, y + 4, { width: 50, align: "center", lineBreak: false });
+    y += 15;
 
     const tests = [
       { l: "Rozbrojenie immobilizera brelokiem", v: d.test_disarm_key },
       { l: "Rozbrojenie immobilizera kodem PIN", v: d.test_disarm_pin },
-      { l: "Sprawdzenie trybu serwisowego", v: d.test_service_mode },
+      { l: "Sprawdzenie trybu serwisowego",       v: d.test_service_mode },
     ];
     tests.forEach(({ l, v }, i) => {
-      doc.rect(mx, y, cw, 17).fill(i % 2 === 0 ? C.rowOdd : C.rowEven);
-      doc.moveTo(mx, y).lineTo(mx + cw, y).stroke(C.border);
-      doc.font("Regular").fontSize(8.5).fillColor(C.value);
-      doc.text(l, mx + 6, y + 4.5, { width: testColW - 10, lineBreak: false });
+      if (i % 2 === 1) doc.rect(mx, y, cw, 17).fill(C.rowAlt);
+      rule(doc, y, mx, cw, 0.3, C.borderL);
+      doc.font("Regular").fontSize(8.5).fillColor(C.dark);
+      doc.text(l, mx + 5, y + 4.5, { width: testColW - 8, lineBreak: false });
       const ok = v === true;
       const na = v === undefined || v === null;
       doc.font("Bold").fontSize(8.5).fillColor(na ? C.muted : ok ? C.green : C.red);
-      doc.text(na ? "N/A" : ok ? "TAK" : "NIE", mx + testColW + 10, y + 4.5, { width: 55, align: "center", lineBreak: false });
+      doc.text(na ? "N/A" : ok ? "TAK" : "NIE", mx + testColW + 5, y + 4.5, { width: 50, align: "center", lineBreak: false });
       y += 17;
     });
-    doc.moveTo(mx, y).lineTo(mx + cw, y).stroke(C.border);
-    y += 10;
+    rule(doc, y, mx, cw, 0.5, C.border);
+    y += 12;
 
-    // ── 5. ZDJĘCIA DOKUMENTACYJNE ─────────────────────────────────────────────
-    // Check if we need a new page
-    const photoH = 100;
-    if (y + 30 + photoH + 20 > ph - 40) {
+    // ── 5. ZDJECIA DOKUMENTACYJNE (client only — vehicle photos) ─────────────
+    const photoH = 105;
+    if (y + 26 + photoH + 16 > ph - 36) {
       doc.addPage();
-      doc.rect(0, 0, pw, ph).fill(C.pageBg);
-      y = 30;
+      doc.rect(0, 0, pw, ph).fill(C.white);
+      y = 36;
     }
-
     y = sectionHeader(doc, "5. Zdjecia dokumentacyjne pojazdu", y, mx, cw);
 
     const photoSlots = [
       { label: "Przod pojazdu z nr rej.", field: "vehicle_photo_front" },
-      { label: "Numer VIN", field: "vehicle_photo_vin" },
-      { label: "Zegary po uruchomieniu", field: "vehicle_photo_gauges" },
+      { label: "Numer VIN",               field: "vehicle_photo_vin" },
+      { label: "Zegary po uruchomieniu",  field: "vehicle_photo_gauges" },
     ];
-    const photoW = Math.floor((cw - 12) / 3);
+    const photoW = Math.floor((cw - 16) / 3);
     photoSlots.forEach(({ label, field }, i) => {
-      const px = mx + i * (photoW + 6);
-      const imgData = d[field];
-      if (imgData && typeof imgData === "string" && imgData.startsWith("data:image")) {
-        drawImageFit(doc, imgData, px, y, photoW, photoH);
+      const px = mx + i * (photoW + 8);
+      const img = d[field];
+      if (img && typeof img === "string" && img.startsWith("data:image")) {
+        drawImageFit(doc, img, px, y, photoW, photoH);
       } else {
-        doc.rect(px, y, photoW, photoH).fill("#f1f5f9").stroke(C.border);
+        doc.rect(px, y, photoW, photoH).fill(C.rowAlt).stroke(C.border);
         doc.font("Regular").fontSize(7).fillColor(C.muted);
         doc.text("Brak zdjecia", px, y + photoH / 2 - 4, { width: photoW, align: "center", lineBreak: false });
       }
       doc.font("Regular").fontSize(6.5).fillColor(C.label);
-      doc.text(label, px, y + photoH + 3, { width: photoW, align: "center", lineBreak: false });
+      doc.text(label, px, y + photoH + 4, { width: photoW, align: "center", lineBreak: false });
     });
-    y += photoH + 18;
+    y += photoH + 20;
 
-    // Installation photos for immobilizer (if any)
-    if (isImmobilizer) {
-      const ipSlots = [
-        { label: "Zdjecie z montazu 1", field: "install_photo_1" },
-        { label: "Zdjecie z montazu 2", field: "install_photo_2" },
-        { label: "Zdjecie z montazu 3", field: "install_photo_3" },
-      ];
-      const hasInstallPhotos = ipSlots.some(({ field }) => d[field] && d[field].startsWith("data:image"));
-      if (hasInstallPhotos) {
-        if (y + 30 + photoH + 20 > ph - 40) {
-          doc.addPage();
-          doc.rect(0, 0, pw, ph).fill(C.pageBg);
-          y = 30;
-        }
-        y = sectionHeader(doc, "Zdjecia z montazu urzadzenia", y, mx, cw);
-        ipSlots.forEach(({ label, field }, i) => {
-          const px = mx + i * (photoW + 6);
-          const imgData = d[field];
-          if (imgData && typeof imgData === "string" && imgData.startsWith("data:image")) {
-            drawImageFit(doc, imgData, px, y, photoW, photoH);
-          } else {
-            doc.rect(px, y, photoW, photoH).fill("#f1f5f9").stroke(C.border);
-            doc.font("Regular").fontSize(7).fillColor(C.muted);
-            doc.text("Brak zdjecia", px, y + photoH / 2 - 4, { width: photoW, align: "center", lineBreak: false });
-          }
-          doc.font("Regular").fontSize(6.5).fillColor(C.label);
-          doc.text(label, px, y + photoH + 3, { width: photoW, align: "center", lineBreak: false });
-        });
-        y += photoH + 18;
-      }
-    }
-
-    // ── 6. DANE SERWISOWE (archive only) ──────────────────────────────────────
+    // ── 6. DANE SERWISOWE (archive only — no install photos) ─────────────────
     if (isArchive) {
-      if (y + 80 > ph - 50) {
+      if (y + 70 > ph - 36) {
         doc.addPage();
-        doc.rect(0, 0, pw, ph).fill(C.pageBg);
-        y = 30;
+        doc.rect(0, 0, pw, ph).fill(C.white);
+        y = 36;
       }
-      doc.rect(mx, y, cw, 20).fill(C.amberBg).stroke(C.amberBorder);
-      doc.font("Bold").fontSize(8).fillColor(C.amber);
-      doc.text("DANE SERWISOWE — POUFNE (tylko wersja archiwalna)", mx + 6, y + 6, { lineBreak: false });
-      y += 26;
+      y = sectionHeader(doc, "6. Dane serwisowe (poufne — tylko archiwum)", y, mx, cw);
       y = dataRow(doc, "Miejsce montazu urzadzenia:", str(d.control_unit_location), y, mx, cw, false);
-      y = dataRow(doc, "Uwagi instalacyjne:", str(d.service_notes), y, mx, cw, true);
-      doc.moveTo(mx, y).lineTo(mx + cw, y).stroke(C.border);
-      y += 10;
+      y = dataRow(doc, "Uwagi instalacyjne:",         str(d.service_notes),          y, mx, cw, true);
+      rule(doc, y, mx, cw, 0.5, C.border);
+      y += 12;
     }
 
     // ── FOOTER ────────────────────────────────────────────────────────────────
-    const footerY = ph - 30;
-    doc.rect(0, footerY, pw, 30).fill(C.footerBg);
-    doc.moveTo(0, footerY).lineTo(pw, footerY).lineWidth(0.5).stroke(C.border);
-
-    // Left: disclaimer
-    doc.font("Regular").fontSize(6.5).fillColor(C.footerText);
+    const fy = ph - 28;
+    doc.moveTo(mx, fy).lineTo(mx + cw, fy).lineWidth(0.5).stroke(C.border);
+    doc.font("Regular").fontSize(6.5).fillColor(C.muted);
     doc.text(
       "Dokument wygenerowany automatycznie. AutoSafe — autoryzowany instalator systemow bezpieczenstwa.",
-      mx, footerY + 8, { width: cw - 80, lineBreak: false }
+      mx, fy + 8, { width: cw - 50, lineBreak: false }
     );
-    // Right: page number
-    doc.font("Regular").fontSize(6.5).fillColor(C.muted);
-    doc.text("Strona 1", pw - mx - 40, footerY + 8, { width: 40, align: "right", lineBreak: false });
+    doc.text(df, pw - mx - 45, fy + 8, { width: 45, align: "right", lineBreak: false });
 
     doc.end();
   } catch (err) {

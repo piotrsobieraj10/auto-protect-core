@@ -16,10 +16,14 @@ const securityTypes = [
 ];
 
 const caniModels = [
-  { value: "seo-cani-u333-76-10", label: "Seo Cani U333_76_10" },
-  { value: "seo-cani-u335-76-10", label: "Seo Cani U335_76_10" },
-  { value: "seo-canblu-u335-77-12", label: "Seo Canblu U335_77_12 z 2 brelokami" },
-  { value: "seo-cani-u122-50-10", label: "Seo Cani U122_50_10" },
+  { value: "seo-cani-u333-76-10",    label: "Seo Cani U333_76_10" },
+  { value: "seo-cani-u335-76-10",    label: "Seo Cani U335_76_10" },
+  { value: "seo-canblu-u335-77-12",  label: "Seo Canblu U335_77_12 z 2 brelokami" },
+  { value: "seo-canblu-u335-77-a1",  label: "Seo Canblu U335_77_A1 z 2 brelokami" },
+  { value: "seo-canblu-u335-77-a2-2",label: "Seo Canblu U335_77_A2 z 2 brelokami" },
+  { value: "seo-canblu-u335-77-a2",  label: "Seo Canblu U335_77_A2" },
+  { value: "seo-cani-u122-50-05",    label: "Seo Cani U122_50_05" },
+  { value: "seo-cani-u122-50-10",    label: "Seo Cani U122_50_10" },
 ];
 
 const installPhotoSlots = [
