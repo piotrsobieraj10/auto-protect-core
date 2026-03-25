@@ -1,17 +1,105 @@
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Wrench } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Wrench, Lock, ShieldCheck, AlertCircle } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import ProtocolStepper from "@/components/ProtocolStepper";
 
-const Dashboard = () => {
-  const [showProtocol, setShowProtocol] = useState(false);
+const PANEL_PASSWORD = "adminn";
+const SESSION_KEY = "autosafe_panel_auth";
 
+const Dashboard = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    () => sessionStorage.getItem(SESSION_KEY) === "true"
+  );
+  const [showProtocol, setShowProtocol] = useState(false);
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(false);
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (password === PANEL_PASSWORD) {
+      sessionStorage.setItem(SESSION_KEY, "true");
+      setIsAuthenticated(true);
+      setError(false);
+    } else {
+      setError(true);
+      setPassword("");
+    }
+  };
+
+  // ── Password gate ─────────────────────────────────────────────────────────
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center px-4">
+        <div className="w-full max-w-sm">
+          {/* Logo */}
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600/20 border border-blue-500/40 rounded-2xl mb-4">
+              <ShieldCheck className="w-8 h-8 text-blue-400" />
+            </div>
+            <h1 className="text-2xl font-bold text-white">AutoSafe</h1>
+            <p className="text-slate-400 text-sm mt-1">Panel Montera — dostęp chroniony</p>
+          </div>
+
+          {/* Login card */}
+          <div className="bg-slate-800/80 border border-slate-700 rounded-2xl p-8 shadow-2xl">
+            <div className="flex items-center gap-2 mb-6">
+              <Lock className="w-4 h-4 text-blue-400" />
+              <h2 className="text-white font-semibold">Zaloguj się</h2>
+            </div>
+
+            <form onSubmit={handleLogin} className="space-y-5">
+              <div>
+                <Label htmlFor="password" className="text-slate-300 mb-2 block text-sm">
+                  Hasło dostępu
+                </Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => { setPassword(e.target.value); setError(false); }}
+                  placeholder="Wprowadź hasło"
+                  autoFocus
+                  autoComplete="current-password"
+                  data-testid="input-password"
+                  className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-500 focus:border-blue-500 focus:ring-blue-500/20"
+                />
+              </div>
+
+              {error && (
+                <div className="flex items-center gap-2 bg-red-950/50 border border-red-800/60 rounded-lg px-3 py-2.5">
+                  <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
+                  <p className="text-sm text-red-400">Błędne hasło. Spróbuj ponownie.</p>
+                </div>
+              )}
+
+              <Button
+                type="submit"
+                data-testid="button-login"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl"
+              >
+                Zaloguj
+              </Button>
+            </form>
+          </div>
+
+          <p className="text-center text-slate-600 text-xs mt-6">
+            AutoSafe © {new Date().getFullYear()} — System Protokołów Montażu
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Protocol stepper ──────────────────────────────────────────────────────
   if (showProtocol) {
     return <ProtocolStepper onBack={() => setShowProtocol(false)} />;
   }
 
+  // ── Dashboard ─────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       <Navbar />
