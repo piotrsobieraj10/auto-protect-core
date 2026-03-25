@@ -10,9 +10,6 @@ import StepTestsAndAcceptance from "./protocol-steps/StepTestsAndAcceptance";
 import { toast } from "sonner";
 
 interface ProtocolData {
-  order_number: string;
-  technician: string;
-  location: string;
   client_name: string;
   client_address: string;
   vehicle_brand: string;
@@ -22,22 +19,22 @@ interface ProtocolData {
   vehicle_registration: string;
   vehicle_mileage: string;
   fuel_type: string;
-  vehicle_photo_front: string;
-  vehicle_photo_vin: string;
-  vehicle_photo_gauges: string;
   security_type: string;
   device_model: string;
   serial_number: string;
   homologation_number: string;
+  install_video: string;
+  install_photo_1: string;
+  install_photo_2: string;
+  install_photo_3: string;
   control_unit_location: string;
-  gps_antenna_location: string;
-  installation_connection_point: string;
   service_notes: string;
-  installation_video_url: string;
   test_disarm_key: boolean | null;
   test_disarm_pin: boolean | null;
   test_service_mode: boolean | null;
-  test_obd: boolean | null;
+  vehicle_photo_front: string;
+  vehicle_photo_vin: string;
+  vehicle_photo_gauges: string;
 }
 
 interface ProtocolStepperProps {
@@ -45,7 +42,7 @@ interface ProtocolStepperProps {
 }
 
 const steps = [
-  { id: 1, title: "Identyfikacja", description: "Dane zlecenia, klienta i pojazdu" },
+  { id: 1, title: "Identyfikacja", description: "Dane klienta i pojazdu" },
   { id: 2, title: "Specyfikacja", description: "Typ zabezpieczenia i urządzenie" },
   { id: 3, title: "Dane Serwisowe", description: "Informacje poufne (archiwum)" },
   { id: 4, title: "Testy i Odbiór", description: "Wyniki testów i zdjęcia" },
@@ -55,9 +52,6 @@ const ProtocolStepper = ({ onBack }: ProtocolStepperProps) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [isGenerating, setIsGenerating] = useState(false);
   const [data, setData] = useState<ProtocolData>({
-    order_number: "",
-    technician: "",
-    location: "",
     client_name: "",
     client_address: "",
     vehicle_brand: "",
@@ -67,22 +61,22 @@ const ProtocolStepper = ({ onBack }: ProtocolStepperProps) => {
     vehicle_registration: "",
     vehicle_mileage: "",
     fuel_type: "",
-    vehicle_photo_front: "",
-    vehicle_photo_vin: "",
-    vehicle_photo_gauges: "",
     security_type: "",
     device_model: "",
     serial_number: "",
     homologation_number: "E20",
+    install_video: "",
+    install_photo_1: "",
+    install_photo_2: "",
+    install_photo_3: "",
     control_unit_location: "",
-    gps_antenna_location: "",
-    installation_connection_point: "",
     service_notes: "",
-    installation_video_url: "",
     test_disarm_key: null,
     test_disarm_pin: null,
     test_service_mode: null,
-    test_obd: null,
+    vehicle_photo_front: "",
+    vehicle_photo_vin: "",
+    vehicle_photo_gauges: "",
   });
 
   const handleNext = () => {
@@ -93,7 +87,7 @@ const ProtocolStepper = ({ onBack }: ProtocolStepperProps) => {
     if (currentStep > 1) setCurrentStep(currentStep - 1);
   };
 
-  const handleDataChange = (field: keyof ProtocolData, value: any) => {
+  const handleDataChange = (field: string, value: any) => {
     setData((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -113,8 +107,9 @@ const ProtocolStepper = ({ onBack }: ProtocolStepperProps) => {
       const a = document.createElement("a");
       a.href = url;
       const lastName = (data.client_name || "Klient").split(" ").pop() || "Klient";
-      const dateStr = new Date().toISOString().slice(0, 10);
-      a.download = `${dateStr}_${data.vehicle_registration || "BEZ_REJ"}_${lastName}.pdf`;
+      const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+      const reg = (data.vehicle_registration || "BEZ_REJ").replace(/\s+/g, "");
+      a.download = `${dateStr}_${reg}_${lastName}.pdf`;
       a.click();
       URL.revokeObjectURL(url);
       toast.success(isArchive ? "Archiwum wygenerowane!" : "Protokół dla klienta wygenerowany!");
@@ -161,6 +156,7 @@ const ProtocolStepper = ({ onBack }: ProtocolStepperProps) => {
             </Button>
           </div>
 
+          {/* Progress bar */}
           <div className="mb-8">
             <div className="flex gap-2 mb-2">
               {steps.map((step) => (
@@ -190,7 +186,9 @@ const ProtocolStepper = ({ onBack }: ProtocolStepperProps) => {
           <Card className="bg-slate-800 border-slate-700 mb-6 rounded-2xl">
             <CardHeader>
               <CardTitle className="text-white text-xl">{steps[currentStep - 1].title}</CardTitle>
-              <CardDescription className="text-slate-400">{steps[currentStep - 1].description}</CardDescription>
+              <CardDescription className="text-slate-400">
+                {steps[currentStep - 1].description}
+              </CardDescription>
             </CardHeader>
             <CardContent className="min-h-64">{renderStep()}</CardContent>
           </Card>
