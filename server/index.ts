@@ -127,17 +127,25 @@ function buildPDFBuffer(d: any, isArchive: boolean): Promise<Buffer> {
       // ── WHITE PAGE ──────────────────────────────────────────────────────────
       doc.rect(0, 0, pw, ph).fill(C.white);
 
-      // ── HEADER — logo only top-left, sharp proportional scaling ─────────────
-      const hTop = 20;
-      const logoMaxW = 200;
-      const logoMaxH = 44;
+      // ── HEADER — logo top-left, date top-right ──────────────────────────────
+      const hTop = 16;
+      // Logo is 500×500 (square) — give it a large square box so it renders visibly
+      const logoBoxSize = 90;
 
+      let logoRendered = false;
       try {
-        // fit[] maintains original aspect ratio — no stretching or blurring
-        doc.image(LOGO_PATH, mx, hTop, { fit: [logoMaxW, logoMaxH] });
+        doc.image(LOGO_PATH, mx, hTop, { fit: [logoBoxSize, logoBoxSize] });
+        logoRendered = true;
       } catch {
-        doc.font("Bold").fontSize(14).fillColor(C.dark);
-        doc.text("AutoSafe", mx, hTop + 10, { lineBreak: false });
+        logoRendered = false;
+      }
+
+      if (!logoRendered) {
+        // Fallback: bold text logo
+        doc.font(FONT_BOLD).fontSize(22).fillColor(C.dark);
+        doc.text("AutoSafe", mx, hTop + 18, { lineBreak: false });
+        doc.font(FONT_REGULAR).fontSize(8).fillColor(C.label);
+        doc.text("Systemy zabezpieczen pojazdow", mx, hTop + 44, { lineBreak: false });
       }
 
       // Right: date only
@@ -145,12 +153,12 @@ function buildPDFBuffer(d: any, isArchive: boolean): Promise<Buffer> {
       const df = `${today.getDate().toString().padStart(2, "0")}.${(today.getMonth() + 1).toString().padStart(2, "0")}.${today.getFullYear()}`;
       const rightX = pw - mx - 110;
       doc.font(FONT_REGULAR).fontSize(7.5).fillColor(C.label);
-      doc.text("Data wystawienia:", rightX, hTop + 8, { width: 110, lineBreak: false });
+      doc.text("Data wystawienia:", rightX, hTop + 30, { width: 110, lineBreak: false });
       doc.font(FONT_BOLD).fontSize(8.5).fillColor(C.dark);
-      doc.text(df, rightX, hTop + 20, { width: 110, lineBreak: false });
+      doc.text(df, rightX, hTop + 43, { width: 110, lineBreak: false });
 
       // Header bottom rule
-      const hBottom = hTop + logoMaxH + 8;
+      const hBottom = hTop + logoBoxSize + 8;
       doc.moveTo(mx, hBottom).lineTo(mx + cw, hBottom).lineWidth(1).stroke(C.dark);
 
       let y = hBottom + 14;
