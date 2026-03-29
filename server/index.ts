@@ -14,6 +14,9 @@ const FONT_DIR = path.join(process.cwd(), "node_modules", "pdfmake", "build", "f
 const FONT_REGULAR = path.join(FONT_DIR, "Roboto-Regular.ttf");
 const FONT_BOLD = path.join(FONT_DIR, "Roboto-Medium.ttf");
 
+// AutoSafe logo for PDF header
+const LOGO_PATH = path.join(__dirname, "logo.png");
+
 const app = express();
 app.use(cors());
 app.use(express.json({ limit: "25mb" }));
@@ -65,7 +68,8 @@ function sectionHeader(doc: any, title: string, y: number, x: number, w: number)
 
 function dataRow(
   doc: any, label: string, value: string,
-  y: number, x: number, w: number, alt: boolean
+  y: number, x: number, w: number, alt: boolean,
+  valueFontSize = 8.5
 ): number {
   const rowH = 17;
   const colW = 160;
@@ -73,8 +77,8 @@ function dataRow(
   doc.moveTo(x, y).lineTo(x + w, y).lineWidth(0.3).stroke(C.borderL);
   doc.font(FONT_REGULAR).fontSize(8).fillColor(C.label);
   doc.text(label, x + 5, y + 4.5, { width: colW - 8, lineBreak: false });
-  doc.font(FONT_REGULAR).fontSize(8.5).fillColor(C.dark);
-  doc.text(value, x + colW, y + 4, { width: w - colW - 5, lineBreak: false });
+  doc.font(FONT_REGULAR).fontSize(valueFontSize).fillColor(C.dark);
+  doc.text(value, x + colW, y + 4.5, { lineBreak: false });
   return y + rowH;
 }
 
@@ -127,39 +131,29 @@ app.post("/api/generate-protocol-pdf", (req, res) => {
     // ── WHITE PAGE ────────────────────────────────────────────────────────────
     doc.rect(0, 0, pw, ph).fill(C.white);
 
-    // ── HEADER (3-column, no overlap) ─────────────────────────────────────────
-    const hTop = 28;
+    // ── HEADER — logo only in top-left, white background ──────────────────────
+    const hTop = 20;
+    const logoH = 42;
+    const logoW = 180;
 
-    // Left: logo mark "AS" in a box + brand name
-    doc.rect(mx, hTop, 28, 28).fill(C.white).stroke(C.dark);
-    doc.font("Bold").fontSize(11).fillColor(C.dark);
-    doc.text("AS", mx, hTop + 8, { width: 28, align: "center", lineBreak: false });
+    try {
+      doc.image(LOGO_PATH, mx, hTop, { height: logoH, width: logoW });
+    } catch {
+      doc.font("Bold").fontSize(14).fillColor(C.dark);
+      doc.text("AutoSafe", mx, hTop + 10, { lineBreak: false });
+    }
 
-    doc.font("Bold").fontSize(16).fillColor(C.dark);
-    doc.text("AutoSafe", mx + 34, hTop + 2, { lineBreak: false });
-    doc.font("Regular").fontSize(7.5).fillColor(C.mid);
-    doc.text("Systemy bezpieczenstwa pojazdow", mx + 34, hTop + 21, { lineBreak: false });
-
-    // Centre: document title
-    doc.font("Bold").fontSize(11).fillColor(C.dark);
-    doc.text("PROTOKOL ODBIORU PRAC", 0, hTop + 5, { align: "center", lineBreak: false });
-    doc.font("Regular").fontSize(7).fillColor(C.label);
-    doc.text(
-      isArchive ? "WERSJA ARCHIWALNA — POUFNE" : "Dokument dla klienta",
-      0, hTop + 20, { align: "center", lineBreak: false }
-    );
-
-    // Right: date — fixed column, no overlap
+    // Right: date only
     const today = new Date();
     const df = `${today.getDate().toString().padStart(2, "0")}.${(today.getMonth() + 1).toString().padStart(2, "0")}.${today.getFullYear()}`;
     const rightX = pw - mx - 100;
     doc.font("Regular").fontSize(7.5).fillColor(C.label);
-    doc.text("Data wystawienia:", rightX, hTop + 4, { width: 100, lineBreak: false });
+    doc.text("Data wystawienia:", rightX, hTop + 8, { width: 100, lineBreak: false });
     doc.font("Bold").fontSize(8.5).fillColor(C.dark);
-    doc.text(df, rightX, hTop + 16, { width: 100, lineBreak: false });
+    doc.text(df, rightX, hTop + 20, { width: 100, lineBreak: false });
 
     // Header bottom rule (thick)
-    const hBottom = hTop + 44;
+    const hBottom = hTop + logoH + 8;
     doc.moveTo(mx, hBottom).lineTo(mx + cw, hBottom).lineWidth(1).stroke(C.dark);
 
     let y = hBottom + 14;
@@ -175,10 +169,14 @@ app.post("/api/generate-protocol-pdf", (req, res) => {
     y = sectionHeader(doc, "2. Dane pojazdu", y, mx, cw);
     const halfW = (cw - 8) / 2;
     const vLeft  = [["Marka:", str(d.vehicle_brand)], ["Model:", str(d.vehicle_model)], ["Nr rejestracyjny:", str(d.vehicle_registration)], ["Rok produkcji:", str(d.vehicle_year)]];
-    const vRight = [["VIN:", str(d.vehicle_vin)], ["Przebieg:", d.vehicle_mileage ? `${d.vehicle_mileage} km` : "—"], ["Rodzaj paliwa:", str(d.fuel_type)]];
+    const vRight: [string, string, number?][] = [
+      ["VIN:", str(d.vehicle_vin), 7.5],
+      ["Przebieg:", d.vehicle_mileage ? `${d.vehicle_mileage} km` : "—"],
+      ["Rodzaj paliwa:", str(d.fuel_type)],
+    ];
     const colStartY = y;
     vLeft.forEach(([l, v], i)  => dataRow(doc, l, v, colStartY + i * 17, mx, halfW, i % 2 === 0));
-    vRight.forEach(([l, v], i) => dataRow(doc, l, v, colStartY + i * 17, mx + halfW + 8, halfW, i % 2 === 0));
+    vRight.forEach(([l, v, fs], i) => dataRow(doc, l, v, colStartY + i * 17, mx + halfW + 8, halfW, i % 2 === 0, fs));
     y = colStartY + 4 * 17;
     rule(doc, y, mx, cw, 0.5, C.border);
     y += 12;
