@@ -251,7 +251,7 @@ app.post("/api/generate-protocol-pdf", (req, res) => {
     });
     y += photoH + 20;
 
-    // ── 6. DANE SERWISOWE (archive only — no install photos) ─────────────────
+    // ── 6. DANE SERWISOWE (archive only) ─────────────────────────────────────
     if (isArchive) {
       if (y + 70 > ph - 36) {
         doc.addPage();
@@ -263,6 +263,40 @@ app.post("/api/generate-protocol-pdf", (req, res) => {
       y = dataRow(doc, "Uwagi instalacyjne:",         str(d.service_notes),          y, mx, cw, true);
       rule(doc, y, mx, cw, 0.5, C.border);
       y += 12;
+
+      // ── Zdjecia z montazu (archive only) ──────────────────────────────────
+      const installPhotoSlots = [
+        { label: "Zdjecie montazowe 1", field: "install_photo_1" },
+        { label: "Zdjecie montazowe 2", field: "install_photo_2" },
+        { label: "Zdjecie montazowe 3", field: "install_photo_3" },
+      ];
+      const hasAnyInstallPhoto = installPhotoSlots.some(
+        ({ field }) => d[field] && typeof d[field] === "string" && d[field].startsWith("data:image")
+      );
+      if (hasAnyInstallPhoto) {
+        const installPhotoH = 95;
+        if (y + 26 + installPhotoH + 16 > ph - 36) {
+          doc.addPage();
+          doc.rect(0, 0, pw, ph).fill(C.white);
+          y = 36;
+        }
+        y = sectionHeader(doc, "7. Zdjecia z montazu (archiwum)", y, mx, cw);
+        const installPhotoW = Math.floor((cw - 16) / 3);
+        installPhotoSlots.forEach(({ label, field }, i) => {
+          const px = mx + i * (installPhotoW + 8);
+          const img = d[field];
+          if (img && typeof img === "string" && img.startsWith("data:image")) {
+            drawImageFit(doc, img, px, y, installPhotoW, installPhotoH);
+          } else {
+            doc.rect(px, y, installPhotoW, installPhotoH).fill(C.rowAlt).stroke(C.border);
+            doc.font("Regular").fontSize(7).fillColor(C.muted);
+            doc.text("Brak zdjecia", px, y + installPhotoH / 2 - 4, { width: installPhotoW, align: "center", lineBreak: false });
+          }
+          doc.font("Regular").fontSize(6.5).fillColor(C.label);
+          doc.text(label, px, y + installPhotoH + 4, { width: installPhotoW, align: "center", lineBreak: false });
+        });
+        y += installPhotoH + 20;
+      }
     }
 
     // ── FOOTER ────────────────────────────────────────────────────────────────
