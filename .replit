@@ -46,8 +46,8 @@ externalPort = 80
 [userenv]
 
 [userenv.shared]
-SMTP_HOST = "smtp.example.com"
-SMTP_PORT = "587"
-SMTP_USER = "your@email.com"
+SMTP_HOST = "smtp.poczta.onet.pl"
+SMTP_PORT = "465"
+SMTP_USER = "autosafe@o2.pl"
 SMTP_PASS = "your_password"
-SMTP_FROM = "AutoSafe <noreply@autosafe.pl>"
+SMTP_FROM = "AutoSafe <autosafe@o2.pl>"
