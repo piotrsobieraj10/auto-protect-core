@@ -20,15 +20,25 @@ AutoSafe is a Polish-language web application for vehicle security system instal
 - Password-protected via server-side auth at `/api/auth/panel-login`
 - Password stored securely in `PANEL_PASSWORD` environment secret
 - Multi-step protocol form (4 steps): client/vehicle identification, device specification, service data, tests & acceptance
-- PDF generation via `/api/generate-protocol-pdf` (uses pdfkit + Roboto font from pdfmake)
-- Two PDF versions: customer copy and confidential archive copy
+- PDF generation via `buildPDFBuffer(d, isArchive)` — reusable internal function returning a Buffer
+  - `/api/generate-protocol-pdf` — download either version as a file
+  - `/api/send-client-pdf` — generate customer PDF (no install photos) and email it to the client via SMTP
+  - `/api/archive-and-send` — generate both PDFs + add video, bundle into ZIP (`Montaz_[REG]_[DATE].zip`), send to `autosafe@o2.pl`
+- Logo uses `fit: [w, h]` in pdfkit for correct aspect ratio (no stretching)
+- Privacy rule: install video/photos are **never** included in the customer copy — archive only
+- "Wysyłka i Archiwizacja" panel appears on step 4 of the protocol form
 
 ## Environment Variables / Secrets
 
 | Key | Description |
 |-----|-------------|
 | `PANEL_PASSWORD` | Password for the installer panel login |
-| `RESEND_API_KEY` | Resend API key for sending emails (optional — email routes gracefully fail without it) |
+| `RESEND_API_KEY` | Resend API key for contact form email (Resend.com) |
+| `SMTP_HOST` | SMTP server hostname (for sending PDFs and archive ZIP) |
+| `SMTP_PORT` | SMTP server port (587 or 465) |
+| `SMTP_USER` | SMTP username / sender address |
+| `SMTP_PASS` | SMTP password |
+| `SMTP_FROM` | Display name + address for outgoing email (e.g. `AutoSafe <noreply@autosafe.pl>`) |
 | `DATABASE_URL` | PostgreSQL connection string (auto-provisioned by Replit) |
 
 ## Running the App

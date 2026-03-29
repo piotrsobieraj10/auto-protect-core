@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChevronLeft, ChevronRight, FileText } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { ChevronLeft, ChevronRight, FileText, Mail, Archive, Send } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import StepIdentification from "./protocol-steps/StepIdentification";
 import StepSpecification from "./protocol-steps/StepSpecification";
@@ -51,6 +53,10 @@ const steps = [
 const ProtocolStepper = ({ onBack }: ProtocolStepperProps) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isSendingClient, setIsSendingClient] = useState(false);
+  const [isSendingArchive, setIsSendingArchive] = useState(false);
+  const [clientEmail, setClientEmail] = useState("");
+
   const [data, setData] = useState<ProtocolData>({
     client_name: "",
     client_address: "",
@@ -99,9 +105,7 @@ const ProtocolStepper = ({ onBack }: ProtocolStepperProps) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ protocolData: data, isArchive }),
       });
-
       if (!res.ok) throw new Error("Failed to generate PDF");
-
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -115,125 +119,215 @@ const ProtocolStepper = ({ onBack }: ProtocolStepperProps) => {
       toast.success(isArchive ? "Archiwum wygenerowane!" : "Protokół dla klienta wygenerowany!");
     } catch (error) {
       console.error("PDF generation error:", error);
-      toast.error("Błąd generowania PDF. Spróbuj ponownie.");
+      toast.error("Błąd generowania PDF.");
     } finally {
       setIsGenerating(false);
     }
   };
 
-  const renderStep = () => {
-    switch (currentStep) {
-      case 1:
-        return <StepIdentification data={data} onDataChange={handleDataChange} />;
-      case 2:
-        return <StepSpecification data={data} onDataChange={handleDataChange} />;
-      case 3:
-        return <StepServiceData data={data} onDataChange={handleDataChange} />;
-      case 4:
-        return <StepTestsAndAcceptance data={data} onDataChange={handleDataChange} />;
-      default:
-        return null;
+  const handleSendClientPDF = async () => {
+    if (!clientEmail) { toast.error("Podaj adres e-mail klienta."); return; }
+    setIsSendingClient(true);
+    try {
+      const res = await fetch("/api/send-client-pdf", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ protocolData: data, clientEmail }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Błąd wysyłki");
+      toast.success(`Protokół wysłany na ${clientEmail}`);
+    } catch (err: any) {
+      toast.error(err.message || "Błąd wysyłki protokołu do klienta.");
+    } finally {
+      setIsSendingClient(false);
     }
   };
+
+  const handleArchiveAndSend = async () => {
+    setIsSendingArchive(true);
+    try {
+      const res = await fetch("/api/archive-and-send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ protocolData: data }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Błąd archiwizacji");
+      toast.success("Archiwum ZIP wysłane do AutoSafe!");
+    } catch (err: any) {
+      toast.error(err.message || "Błąd archiwizacji i wysyłki.");
+    } finally {
+      setIsSendingArchive(false);
+    }
+  };
+
+  const renderStep = () => {
+    switch (currentStep) {
+      case 1: return <StepIdentification data={data} onDataChange={handleDataChange} />;
+      case 2: return <StepSpecification data={data} onDataChange={handleDataChange} />;
+      case 3: return <StepServiceData data={data} onDataChange={handleDataChange} />;
+      case 4: return <StepTestsAndAcceptance data={data} onDataChange={handleDataChange} />;
+      default: return null;
+    }
+  };
+
+  const isLastStep = currentStep === steps.length;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       <Navbar />
-      <div className="container mx-auto px-4 pt-32 pb-12">
-        <div className="max-w-4xl mx-auto">
-          <div className="mb-8 flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-white mb-1">Protokół Odbioru Prac</h1>
-              <p className="text-slate-400">Krok {currentStep} z {steps.length}</p>
-            </div>
-            <Button
-              variant="ghost"
-              className="text-slate-400 hover:text-white rounded-xl"
-              onClick={onBack}
-            >
-              <ChevronLeft className="w-5 h-5 mr-1" />
-              Powrót
-            </Button>
+      <div className="container mx-auto px-4 pt-24 pb-12 max-w-2xl">
+        {/* Back button */}
+        <button
+          onClick={onBack}
+          className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors text-sm"
+        >
+          <ChevronLeft className="w-4 h-4" />
+          Strona główna
+        </button>
+
+        {/* Progress */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-2">
+            <h1 className="text-2xl font-bold text-white">Protokół Odbioru Prac</h1>
+            <span className="text-slate-400 text-sm">Krok {currentStep} z {steps.length}</span>
           </div>
-
-          {/* Progress bar */}
-          <div className="mb-8">
-            <div className="flex gap-2 mb-2">
-              {steps.map((step) => (
-                <div key={step.id} className="flex-1">
-                  <div
-                    className={`h-2 rounded-full transition-all duration-300 ${
-                      step.id <= currentStep ? "bg-blue-500" : "bg-slate-700"
-                    }`}
-                  />
-                </div>
-              ))}
-            </div>
-            <div className="flex justify-between text-xs mt-1">
-              {steps.map((step) => (
-                <span
-                  key={step.id}
-                  className={`transition-colors ${
-                    step.id <= currentStep ? "text-blue-400" : "text-slate-600"
-                  }`}
-                >
-                  {step.title}
-                </span>
-              ))}
-            </div>
+          <div className="flex gap-1">
+            {steps.map((step) => (
+              <div
+                key={step.id}
+                className={`h-1.5 flex-1 rounded-full transition-colors ${
+                  step.id <= currentStep ? "bg-blue-500" : "bg-slate-700"
+                }`}
+              />
+            ))}
           </div>
-
-          <Card className="bg-slate-800 border-slate-700 mb-6 rounded-2xl">
-            <CardHeader>
-              <CardTitle className="text-white text-xl">{steps[currentStep - 1].title}</CardTitle>
-              <CardDescription className="text-slate-400">
-                {steps[currentStep - 1].description}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="min-h-64">{renderStep()}</CardContent>
-          </Card>
-
-          <div className="flex gap-3 justify-between">
-            <Button
-              variant="outline"
-              onClick={handlePrev}
-              disabled={currentStep === 1}
-              className="border-slate-600 text-slate-300 hover:bg-slate-700 rounded-xl"
-            >
-              <ChevronLeft className="w-4 h-4 mr-2" />
-              Wstecz
-            </Button>
-
-            {currentStep === steps.length ? (
-              <div className="flex gap-2">
-                <Button
-                  onClick={() => handleGeneratePDF(false)}
-                  disabled={isGenerating}
-                  className="bg-blue-600 hover:bg-blue-700 rounded-xl"
-                >
-                  <FileText className="w-4 h-4 mr-2" />
-                  {isGenerating ? "Generowanie..." : "Protokół dla klienta"}
-                </Button>
-                <Button
-                  onClick={() => handleGeneratePDF(true)}
-                  disabled={isGenerating}
-                  className="bg-amber-600 hover:bg-amber-700 rounded-xl"
-                >
-                  <FileText className="w-4 h-4 mr-2" />
-                  {isGenerating ? "Generowanie..." : "Archiwum (z danymi)"}
-                </Button>
-              </div>
-            ) : (
-              <Button
-                onClick={handleNext}
-                className="bg-blue-600 hover:bg-blue-700 rounded-xl"
+          <div className="flex justify-between mt-2">
+            {steps.map((step) => (
+              <span
+                key={step.id}
+                className={`text-xs ${step.id === currentStep ? "text-blue-400 font-medium" : "text-slate-500"}`}
               >
-                Dalej
-                <ChevronRight className="w-4 h-4 ml-2" />
-              </Button>
-            )}
+                {step.title}
+              </span>
+            ))}
           </div>
         </div>
+
+        {/* Step card */}
+        <Card className="bg-slate-800 border-slate-700 mb-4">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-white text-lg">{steps[currentStep - 1].title}</CardTitle>
+            <CardDescription className="text-slate-400">{steps[currentStep - 1].description}</CardDescription>
+          </CardHeader>
+          <CardContent className="min-h-64">{renderStep()}</CardContent>
+        </Card>
+
+        {/* Navigation */}
+        <div className="flex gap-3 justify-between mb-6">
+          <Button
+            variant="outline"
+            onClick={handlePrev}
+            disabled={currentStep === 1}
+            className="border-slate-600 text-slate-300 hover:bg-slate-700 rounded-xl"
+          >
+            <ChevronLeft className="w-4 h-4 mr-2" />
+            Wstecz
+          </Button>
+
+          {isLastStep ? (
+            <div className="flex gap-2">
+              <Button
+                onClick={() => handleGeneratePDF(false)}
+                disabled={isGenerating}
+                className="bg-blue-600 hover:bg-blue-700 rounded-xl"
+              >
+                <FileText className="w-4 h-4 mr-2" />
+                {isGenerating ? "Generowanie..." : "Protokół dla klienta"}
+              </Button>
+              <Button
+                onClick={() => handleGeneratePDF(true)}
+                disabled={isGenerating}
+                className="bg-amber-600 hover:bg-amber-700 rounded-xl"
+              >
+                <FileText className="w-4 h-4 mr-2" />
+                {isGenerating ? "Generowanie..." : "Archiwum (z danymi)"}
+              </Button>
+            </div>
+          ) : (
+            <Button
+              onClick={handleNext}
+              className="bg-blue-600 hover:bg-blue-700 rounded-xl"
+            >
+              Dalej
+              <ChevronRight className="w-4 h-4 ml-2" />
+            </Button>
+          )}
+        </div>
+
+        {/* ── Wysyłka i Archiwizacja (last step only) ─────────────────── */}
+        {isLastStep && (
+          <Card className="bg-slate-800/60 border-slate-700 border-dashed">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-white text-base flex items-center gap-2">
+                <Send className="w-4 h-4 text-blue-400" />
+                Wysyłka i Archiwizacja
+              </CardTitle>
+              <CardDescription className="text-slate-400 text-xs">
+                Wyślij protokół do klienta lub zarchiwizuj kompletną dokumentację.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-5">
+              {/* Send customer PDF to client */}
+              <div className="space-y-2">
+                <Label className="text-slate-300 text-sm font-medium">Wyślij protokół do klienta</Label>
+                <p className="text-xs text-slate-500">
+                  Klient otrzyma jawny PDF — bez zdjęć montażu i danych poufnych.
+                </p>
+                <div className="flex gap-2">
+                  <Input
+                    type="email"
+                    value={clientEmail}
+                    onChange={(e) => setClientEmail(e.target.value)}
+                    placeholder="adres@email.pl"
+                    className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-500 flex-1"
+                  />
+                  <Button
+                    onClick={handleSendClientPDF}
+                    disabled={isSendingClient || !clientEmail}
+                    className="bg-blue-600 hover:bg-blue-700 shrink-0"
+                  >
+                    <Mail className="w-4 h-4 mr-2" />
+                    {isSendingClient ? "Wysyłanie..." : "Wyślij Protokół"}
+                  </Button>
+                </div>
+              </div>
+
+              <div className="border-t border-slate-700" />
+
+              {/* Archive and send to AutoSafe */}
+              <div className="space-y-2">
+                <Label className="text-slate-300 text-sm font-medium">Zakończ i zarchiwizuj</Label>
+                <p className="text-xs text-slate-500">
+                  Tworzy paczkę ZIP z protokołem jawnym, protokołem poufnym (ze zdjęciami montażu
+                  i lokalizacją urządzenia) oraz nagraniem wideo. Wysyła na{" "}
+                  <span className="text-slate-300 font-mono">autosafe@o2.pl</span>.
+                </p>
+                <Button
+                  onClick={handleArchiveAndSend}
+                  disabled={isSendingArchive}
+                  className="w-full bg-emerald-700 hover:bg-emerald-600 text-white rounded-xl"
+                >
+                  <Archive className="w-4 h-4 mr-2" />
+                  {isSendingArchive
+                    ? "Pakowanie i wysyłanie..."
+                    : "Zakończ, Archiwizuj i Wyślij do AutoSafe"}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );

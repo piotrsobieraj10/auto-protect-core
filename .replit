@@ -42,3 +42,12 @@ externalPort = 3001
 [[ports]]
 localPort = 5000
 externalPort = 80
+
+[userenv]
+
+[userenv.shared]
+SMTP_HOST = "smtp.example.com"
+SMTP_PORT = "587"
+SMTP_USER = "your@email.com"
+SMTP_PASS = "your_password"
+SMTP_FROM = "AutoSafe <noreply@autosafe.pl>"
