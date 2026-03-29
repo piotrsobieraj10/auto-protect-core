@@ -130,7 +130,7 @@ function buildPDFBuffer(d: any, isArchive: boolean): Promise<Buffer> {
       // ── HEADER — logo top-left, date top-right ──────────────────────────────
       const hTop = 16;
       // Logo is 500×500 (square) — give it a large square box so it renders visibly
-      const logoBoxSize = 90;
+      const logoBoxSize = 180;
 
       let logoRendered = false;
       try {
@@ -153,9 +153,9 @@ function buildPDFBuffer(d: any, isArchive: boolean): Promise<Buffer> {
       const df = `${today.getDate().toString().padStart(2, "0")}.${(today.getMonth() + 1).toString().padStart(2, "0")}.${today.getFullYear()}`;
       const rightX = pw - mx - 110;
       doc.font(FONT_REGULAR).fontSize(7.5).fillColor(C.label);
-      doc.text("Data wystawienia:", rightX, hTop + 30, { width: 110, lineBreak: false });
+      doc.text("Data wystawienia:", rightX, hTop + 75, { width: 110, lineBreak: false });
       doc.font(FONT_BOLD).fontSize(8.5).fillColor(C.dark);
-      doc.text(df, rightX, hTop + 43, { width: 110, lineBreak: false });
+      doc.text(df, rightX, hTop + 88, { width: 110, lineBreak: false });
 
       // Header bottom rule
       const hBottom = hTop + logoBoxSize + 8;
