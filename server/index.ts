@@ -358,6 +358,20 @@ app.post("/api/send-protocol-email", async (req, res) => {
   }
 });
 
+// ── Panel auth ────────────────────────────────────────────────────────────────
+app.post("/api/auth/panel-login", (req, res) => {
+  const { password } = req.body;
+  const PANEL_PASSWORD = process.env.PANEL_PASSWORD;
+  if (!PANEL_PASSWORD) {
+    return res.status(500).json({ error: "Panel password not configured" });
+  }
+  if (password === PANEL_PASSWORD) {
+    res.json({ success: true });
+  } else {
+    res.status(401).json({ error: "Nieprawidlowe haslo" });
+  }
+});
+
 const PORT = parseInt(process.env.PORT || "3001");
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`API server running on port ${PORT}`);

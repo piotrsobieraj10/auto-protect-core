@@ -7,22 +7,34 @@ import { Wrench, Lock, ShieldCheck, AlertCircle } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import ProtocolStepper from "@/components/ProtocolStepper";
 
-const PANEL_PASSWORD = "adminn";
-
 const Dashboard = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showProtocol, setShowProtocol] = useState(false);
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === PANEL_PASSWORD) {
-      setIsAuthenticated(true);
-      setError(false);
-    } else {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/auth/panel-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+      if (res.ok) {
+        setIsAuthenticated(true);
+        setError(false);
+      } else {
+        setError(true);
+        setPassword("");
+      }
+    } catch {
       setError(true);
       setPassword("");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -75,9 +87,10 @@ const Dashboard = () => {
               <Button
                 type="submit"
                 data-testid="button-login"
+                disabled={loading}
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl"
               >
-                Zaloguj
+                {loading ? "Sprawdzam..." : "Zaloguj"}
               </Button>
             </form>
           </div>
