@@ -8,6 +8,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const require = createRequire(import.meta.url);
 const PDFDocument = require("pdfkit");
+const nodemailer = require("nodemailer");
 const JSZip = require("jszip");
 
 // Roboto font bundled with pdfmake — full Polish character support
@@ -314,29 +315,17 @@ function buildPDFBuffer(d: any, isArchive: boolean): Promise<Buffer> {
   });
 }
 
-// ── Resend API helper ─────────────────────────────────────────────────────────
-async function sendViaResend(payload: {
-  to: string | string[];
-  subject: string;
-  html: string;
-  attachments?: { filename: string; content: string }[];
-}) {
-  const key = process.env.RESEND_API_KEY;
-  if (!key) throw new Error("RESEND_API_KEY nie jest skonfigurowany.");
-  const res = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
-    body: JSON.stringify({
-      from: "AutoSafe <onboarding@resend.dev>",
-      to: Array.isArray(payload.to) ? payload.to : [payload.to],
-      subject: payload.subject,
-      html: payload.html,
-      attachments: payload.attachments,
-    }),
+// ── SMTP transporter (o2.pl / Onet) ──────────────────────────────────────────
+function createTransporter() {
+  return nodemailer.createTransport({
+    host: process.env.SMTP_HOST || "smtp.poczta.onet.pl",
+    port: parseInt(process.env.SMTP_PORT || "465"),
+    secure: (process.env.SMTP_PORT || "465") === "465",
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
+    },
   });
-  const data = await res.json();
-  if (!res.ok) throw new Error((data as any).message || "Resend API error");
-  return data;
 }
 
 // ── PDF download endpoint ─────────────────────────────────────────────────────
@@ -359,18 +348,23 @@ app.post("/api/generate-protocol-pdf", async (req, res) => {
   }
 });
 
-// ── Send customer PDF by email (Resend) ──────────────────────────────────────
+// ── Send customer PDF by email (SMTP) ────────────────────────────────────────
 app.post("/api/send-client-pdf", async (req, res) => {
   try {
     const { protocolData: d, clientEmail } = req.body;
     if (!clientEmail) return res.status(400).json({ error: "Brak adresu e-mail klienta" });
+    if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+      return res.status(500).json({ error: "SMTP nie jest skonfigurowany (brak SMTP_USER lub SMTP_PASS)." });
+    }
 
     const pdfBuf = await buildPDFBuffer(d, false);
     const reg = (d.vehicle_registration || "BEZ_REJ").replace(/\s+/g, "");
     const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, "");
     const filename = `Protokol_${reg}_${dateStr}.pdf`;
 
-    await sendViaResend({
+    const transporter = createTransporter();
+    await transporter.sendMail({
+      from: `AutoSafe <${process.env.SMTP_USER}>`,
       to: clientEmail,
       subject: `Protokół odbioru — ${d.vehicle_brand} ${d.vehicle_model} (${reg})`,
       html: `
@@ -386,7 +380,7 @@ app.post("/api/send-client-pdf", async (req, res) => {
           <p style="color:#666;font-size:12px">AutoSafe — Systemy bezpieczeństwa pojazdów</p>
         </div>
       `,
-      attachments: [{ filename, content: pdfBuf.toString("base64") }],
+      attachments: [{ filename, content: pdfBuf, contentType: "application/pdf" }],
     });
 
     res.json({ success: true });
@@ -396,15 +390,18 @@ app.post("/api/send-client-pdf", async (req, res) => {
   }
 });
 
-// ── Archive: ZIP → autosafe@o2.pl (Resend) ───────────────────────────────────
+// ── Archive: ZIP → autosafe@o2.pl (SMTP) ─────────────────────────────────────
 app.post("/api/archive-and-send", async (req, res) => {
   try {
     const { protocolData: d } = req.body;
+    if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+      return res.status(500).json({ error: "SMTP nie jest skonfigurowany (brak SMTP_USER lub SMTP_PASS)." });
+    }
 
-    const brand  = (d.vehicle_brand        || "MARKA").replace(/\s+/g, "_");
-    const model  = (d.vehicle_model        || "MODEL").replace(/\s+/g, "_");
-    const reg    = (d.vehicle_registration || "BEZ_REJ").replace(/\s+/g, "");
-    const vin    = (d.vehicle_vin          || "VIN").replace(/\s+/g, "");
+    const brand   = (d.vehicle_brand        || "MARKA").replace(/\s+/g, "_");
+    const model   = (d.vehicle_model        || "MODEL").replace(/\s+/g, "_");
+    const reg     = (d.vehicle_registration || "BEZ_REJ").replace(/\s+/g, "");
+    const vin     = (d.vehicle_vin          || "VIN").replace(/\s+/g, "");
     const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, "");
 
     const [clientPDF, archivePDF] = await Promise.all([
@@ -426,7 +423,9 @@ app.post("/api/archive-and-send", async (req, res) => {
     const zipBuf = await zip.generateAsync({ type: "nodebuffer", compression: "DEFLATE" });
     const zipName = `${brand}_${model}_${reg}_${vin}.zip`;
 
-    await sendViaResend({
+    const transporter = createTransporter();
+    await transporter.sendMail({
+      from: `AutoSafe <${process.env.SMTP_USER}>`,
       to: "autosafe@o2.pl",
       subject: `Archiwum montazu — ${d.vehicle_brand} ${d.vehicle_model} ${reg}`,
       html: `
@@ -443,7 +442,7 @@ app.post("/api/archive-and-send", async (req, res) => {
           <p>Paczka ZIP zawiera: protokół jawny, protokół poufny${d.install_video ? " oraz nagranie wideo" : ""}.</p>
         </div>
       `,
-      attachments: [{ filename: zipName, content: zipBuf.toString("base64") }],
+      attachments: [{ filename: zipName, content: zipBuf, contentType: "application/zip" }],
     });
 
     res.json({ success: true });
