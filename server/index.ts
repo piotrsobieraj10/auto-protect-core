@@ -8,7 +8,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const require = createRequire(import.meta.url);
 const PDFDocument = require("pdfkit");
-const nodemailer = require("nodemailer");
 const JSZip = require("jszip");
 
 // Roboto font bundled with pdfmake — full Polish character support
@@ -127,38 +126,32 @@ function buildPDFBuffer(d: any, isArchive: boolean): Promise<Buffer> {
       // ── WHITE PAGE ──────────────────────────────────────────────────────────
       doc.rect(0, 0, pw, ph).fill(C.white);
 
-      // ── HEADER — logo top-left, date top-right ──────────────────────────────
-      const hTop = 16;
-      // Logo is 500×500 (square) — give it a large square box so it renders visibly
-      const logoBoxSize = 180;
+      // ── HEADER — logo top-left (413×126 source), date top-right ────────────
+      const hTop = 18;
+      // Logo is 413×126 (≈3.27:1 wide). Render at ~260×80 to stay sharp & proportional.
+      const logoW = 260;
+      const logoH = 80;
 
-      let logoRendered = false;
       try {
-        doc.image(LOGO_PATH, mx, hTop, { fit: [logoBoxSize, logoBoxSize] });
-        logoRendered = true;
+        doc.image(LOGO_PATH, mx, hTop, { fit: [logoW, logoH] });
       } catch {
-        logoRendered = false;
-      }
-
-      if (!logoRendered) {
-        // Fallback: bold text logo
         doc.font(FONT_BOLD).fontSize(22).fillColor(C.dark);
-        doc.text("AutoSafe", mx, hTop + 18, { lineBreak: false });
+        doc.text("AutoSafe", mx, hTop + 16, { lineBreak: false });
         doc.font(FONT_REGULAR).fontSize(8).fillColor(C.label);
-        doc.text("Systemy zabezpieczen pojazdow", mx, hTop + 44, { lineBreak: false });
+        doc.text("Systemy zabezpieczen pojazdow", mx, hTop + 42, { lineBreak: false });
       }
 
-      // Right: date only
+      // Right: date
       const today = new Date();
       const df = `${today.getDate().toString().padStart(2, "0")}.${(today.getMonth() + 1).toString().padStart(2, "0")}.${today.getFullYear()}`;
       const rightX = pw - mx - 110;
       doc.font(FONT_REGULAR).fontSize(7.5).fillColor(C.label);
-      doc.text("Data wystawienia:", rightX, hTop + 75, { width: 110, lineBreak: false });
-      doc.font(FONT_BOLD).fontSize(8.5).fillColor(C.dark);
-      doc.text(df, rightX, hTop + 88, { width: 110, lineBreak: false });
+      doc.text("Data wystawienia:", rightX, hTop + 30, { width: 110, lineBreak: false });
+      doc.font(FONT_BOLD).fontSize(9).fillColor(C.dark);
+      doc.text(df, rightX, hTop + 43, { width: 110, lineBreak: false });
 
       // Header bottom rule
-      const hBottom = hTop + logoBoxSize + 8;
+      const hBottom = hTop + logoH + 10;
       doc.moveTo(mx, hBottom).lineTo(mx + cw, hBottom).lineWidth(1).stroke(C.dark);
 
       let y = hBottom + 14;
@@ -200,63 +193,66 @@ function buildPDFBuffer(d: any, isArchive: boolean): Promise<Buffer> {
       rule(doc, y, mx, cw, 0.5, C.border);
       y += 12;
 
-      // ── 4. TESTY FUNKCJONALNE ───────────────────────────────────────────────
-      y = sectionHeader(doc, "4. Testy funkcjonalne", y, mx, cw);
-      const testColW = cw - 60;
-      doc.rect(mx, y, cw, 15).fill(C.rowAlt);
-      rule(doc, y, mx, cw, 0.5, C.border);
-      doc.font(FONT_BOLD).fontSize(7.5).fillColor(C.mid);
-      doc.text("Przeprowadzony test", mx + 5, y + 4, { lineBreak: false });
-      doc.text("Wynik", mx + testColW + 5, y + 4, { width: 50, align: "center", lineBreak: false });
-      y += 15;
-
-      const tests = [
+      // ── 4. TESTY FUNKCJONALNE (only executed tests — skip N/A) ─────────────
+      const allTests = [
         { l: "Rozbrojenie immobilizera brelokiem", v: d.test_disarm_key },
         { l: "Rozbrojenie immobilizera kodem PIN", v: d.test_disarm_pin },
         { l: "Sprawdzenie trybu serwisowego",      v: d.test_service_mode },
       ];
-      tests.forEach(({ l, v }, i) => {
-        if (i % 2 === 1) doc.rect(mx, y, cw, 17).fill(C.rowAlt);
-        rule(doc, y, mx, cw, 0.3, C.borderL);
-        doc.font(FONT_REGULAR).fontSize(8.5).fillColor(C.dark);
-        doc.text(l, mx + 5, y + 4.5, { width: testColW - 8, lineBreak: false });
-        const ok = v === true;
-        const na = v === undefined || v === null;
-        doc.font(FONT_BOLD).fontSize(8.5).fillColor(na ? C.muted : ok ? C.green : C.red);
-        doc.text(na ? "N/A" : ok ? "TAK" : "NIE", mx + testColW + 5, y + 4.5, { width: 50, align: "center", lineBreak: false });
-        y += 17;
-      });
-      rule(doc, y, mx, cw, 0.5, C.border);
-      y += 12;
+      const executedTests = allTests.filter(({ v }) => v === true || v === false);
 
-      // ── 5. ZDJECIA POJAZDU (zawsze widoczne — dla klienta) ──────────────────
-      const photoH = 105;
-      if (y + 26 + photoH + 16 > ph - 36) {
-        doc.addPage();
-        doc.rect(0, 0, pw, ph).fill(C.white);
-        y = 36;
+      if (executedTests.length > 0) {
+        y = sectionHeader(doc, "4. Testy funkcjonalne", y, mx, cw);
+        const testColW = cw - 60;
+        doc.rect(mx, y, cw, 15).fill(C.rowAlt);
+        rule(doc, y, mx, cw, 0.5, C.border);
+        doc.font(FONT_BOLD).fontSize(7.5).fillColor(C.mid);
+        doc.text("Przeprowadzony test", mx + 5, y + 4, { lineBreak: false });
+        doc.text("Wynik", mx + testColW + 5, y + 4, { width: 50, align: "center", lineBreak: false });
+        y += 15;
+
+        executedTests.forEach(({ l, v }, i) => {
+          if (i % 2 === 1) doc.rect(mx, y, cw, 17).fill(C.rowAlt);
+          rule(doc, y, mx, cw, 0.3, C.borderL);
+          doc.font(FONT_REGULAR).fontSize(8.5).fillColor(C.dark);
+          doc.text(l, mx + 5, y + 4.5, { width: testColW - 8, lineBreak: false });
+          doc.font(FONT_BOLD).fontSize(8.5).fillColor(v === true ? C.green : C.red);
+          doc.text(v === true ? "TAK" : "NIE", mx + testColW + 5, y + 4.5, { width: 50, align: "center", lineBreak: false });
+          y += 17;
+        });
+        rule(doc, y, mx, cw, 0.5, C.border);
+        y += 12;
       }
-      y = sectionHeader(doc, "5. Zdjecia dokumentacyjne pojazdu", y, mx, cw);
-      const photoSlots = [
+
+      // ── 5. ZDJECIA POJAZDU — only slots with actual photos ──────────────────
+      const allPhotoSlots = [
         { label: "Przod pojazdu z nr rej.", field: "vehicle_photo_front" },
         { label: "Numer VIN",               field: "vehicle_photo_vin" },
         { label: "Zegary po uruchomieniu",  field: "vehicle_photo_gauges" },
       ];
-      const photoW = Math.floor((cw - 16) / 3);
-      photoSlots.forEach(({ label, field }, i) => {
-        const px = mx + i * (photoW + 8);
-        const img = d[field];
-        if (img && typeof img === "string" && img.startsWith("data:image")) {
-          drawImageFit(doc, img, px, y, photoW, photoH);
-        } else {
-          doc.rect(px, y, photoW, photoH).fill(C.rowAlt).stroke(C.border);
-          doc.font(FONT_REGULAR).fontSize(7).fillColor(C.muted);
-          doc.text("Brak zdjecia", px, y + photoH / 2 - 4, { width: photoW, align: "center", lineBreak: false });
+      const presentPhotoSlots = allPhotoSlots.filter(
+        ({ field }) => d[field] && typeof d[field] === "string" && d[field].startsWith("data:image")
+      );
+
+      if (presentPhotoSlots.length > 0) {
+        const photoH = 105;
+        if (y + 26 + photoH + 16 > ph - 36) {
+          doc.addPage();
+          doc.rect(0, 0, pw, ph).fill(C.white);
+          y = 36;
         }
-        doc.font(FONT_REGULAR).fontSize(6.5).fillColor(C.label);
-        doc.text(label, px, y + photoH + 4, { width: photoW, align: "center", lineBreak: false });
-      });
-      y += photoH + 20;
+        y = sectionHeader(doc, "5. Zdjecia dokumentacyjne pojazdu", y, mx, cw);
+        const cols = presentPhotoSlots.length;
+        const gap = 8;
+        const photoW = Math.floor((cw - gap * (cols - 1)) / cols);
+        presentPhotoSlots.forEach(({ label, field }, i) => {
+          const px = mx + i * (photoW + gap);
+          drawImageFit(doc, d[field], px, y, photoW, photoH);
+          doc.font(FONT_REGULAR).fontSize(6.5).fillColor(C.label);
+          doc.text(label, px, y + photoH + 4, { width: photoW, align: "center", lineBreak: false });
+        });
+        y += photoH + 20;
+      }
 
       // ── 6 & 7. DANE POUFNE (tylko archiwum) ─────────────────────────────────
       if (isArchive) {
@@ -271,16 +267,16 @@ function buildPDFBuffer(d: any, isArchive: boolean): Promise<Buffer> {
         rule(doc, y, mx, cw, 0.5, C.border);
         y += 12;
 
-        // Install photos — archive only
-        const installPhotoSlots = [
+        // Install photos — archive only, only slots with actual photos
+        const allInstallSlots = [
           { label: "Zdjecie montazowe 1", field: "install_photo_1" },
           { label: "Zdjecie montazowe 2", field: "install_photo_2" },
           { label: "Zdjecie montazowe 3", field: "install_photo_3" },
         ];
-        const hasInstallPhoto = installPhotoSlots.some(
+        const presentInstallSlots = allInstallSlots.filter(
           ({ field }) => d[field] && typeof d[field] === "string" && d[field].startsWith("data:image")
         );
-        if (hasInstallPhoto) {
+        if (presentInstallSlots.length > 0) {
           const iph = 95;
           if (y + 26 + iph + 16 > ph - 36) {
             doc.addPage();
@@ -288,17 +284,12 @@ function buildPDFBuffer(d: any, isArchive: boolean): Promise<Buffer> {
             y = 36;
           }
           y = sectionHeader(doc, "7. Zdjecia z montazu (archiwum)", y, mx, cw);
-          const ipw = Math.floor((cw - 16) / 3);
-          installPhotoSlots.forEach(({ label, field }, i) => {
-            const px = mx + i * (ipw + 8);
-            const img = d[field];
-            if (img && typeof img === "string" && img.startsWith("data:image")) {
-              drawImageFit(doc, img, px, y, ipw, iph);
-            } else {
-              doc.rect(px, y, ipw, iph).fill(C.rowAlt).stroke(C.border);
-              doc.font(FONT_REGULAR).fontSize(7).fillColor(C.muted);
-              doc.text("Brak zdjecia", px, y + iph / 2 - 4, { width: ipw, align: "center", lineBreak: false });
-            }
+          const icols = presentInstallSlots.length;
+          const igap = 8;
+          const ipw = Math.floor((cw - igap * (icols - 1)) / icols);
+          presentInstallSlots.forEach(({ label, field }, i) => {
+            const px = mx + i * (ipw + igap);
+            drawImageFit(doc, d[field], px, y, ipw, iph);
             doc.font(FONT_REGULAR).fontSize(6.5).fillColor(C.label);
             doc.text(label, px, y + iph + 4, { width: ipw, align: "center", lineBreak: false });
           });
@@ -323,17 +314,29 @@ function buildPDFBuffer(d: any, isArchive: boolean): Promise<Buffer> {
   });
 }
 
-// ── Nodemailer transporter factory ────────────────────────────────────────────
-function createTransporter() {
-  return nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: parseInt(process.env.SMTP_PORT || "587"),
-    secure: process.env.SMTP_PORT === "465",
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
-    },
+// ── Resend API helper ─────────────────────────────────────────────────────────
+async function sendViaResend(payload: {
+  to: string | string[];
+  subject: string;
+  html: string;
+  attachments?: { filename: string; content: string }[];
+}) {
+  const key = process.env.RESEND_API_KEY;
+  if (!key) throw new Error("RESEND_API_KEY nie jest skonfigurowany.");
+  const res = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
+    body: JSON.stringify({
+      from: "AutoSafe <onboarding@resend.dev>",
+      to: Array.isArray(payload.to) ? payload.to : [payload.to],
+      subject: payload.subject,
+      html: payload.html,
+      attachments: payload.attachments,
+    }),
   });
+  const data = await res.json();
+  if (!res.ok) throw new Error((data as any).message || "Resend API error");
+  return data;
 }
 
 // ── PDF download endpoint ─────────────────────────────────────────────────────
@@ -356,26 +359,18 @@ app.post("/api/generate-protocol-pdf", async (req, res) => {
   }
 });
 
-// ── Send customer PDF by email ────────────────────────────────────────────────
+// ── Send customer PDF by email (Resend) ──────────────────────────────────────
 app.post("/api/send-client-pdf", async (req, res) => {
   try {
     const { protocolData: d, clientEmail } = req.body;
     if (!clientEmail) return res.status(400).json({ error: "Brak adresu e-mail klienta" });
 
-    if (!process.env.SMTP_HOST || !process.env.SMTP_USER) {
-      return res.status(500).json({ error: "SMTP nie jest skonfigurowany. Uzupelnij SMTP_HOST, SMTP_USER, SMTP_PASS." });
-    }
-
-    // Customer PDF — no install photos, no service data (isArchive = false)
     const pdfBuf = await buildPDFBuffer(d, false);
-
     const reg = (d.vehicle_registration || "BEZ_REJ").replace(/\s+/g, "");
     const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, "");
     const filename = `Protokol_${reg}_${dateStr}.pdf`;
 
-    const transporter = createTransporter();
-    await transporter.sendMail({
-      from: process.env.SMTP_FROM || process.env.SMTP_USER,
+    await sendViaResend({
       to: clientEmail,
       subject: `Protokół odbioru — ${d.vehicle_brand} ${d.vehicle_model} (${reg})`,
       html: `
@@ -391,7 +386,7 @@ app.post("/api/send-client-pdf", async (req, res) => {
           <p style="color:#666;font-size:12px">AutoSafe — Systemy bezpieczeństwa pojazdów</p>
         </div>
       `,
-      attachments: [{ filename, content: pdfBuf, contentType: "application/pdf" }],
+      attachments: [{ filename, content: pdfBuf.toString("base64") }],
     });
 
     res.json({ success: true });
@@ -401,45 +396,39 @@ app.post("/api/send-client-pdf", async (req, res) => {
   }
 });
 
-// ── Archive: ZIP (customer PDF + confidential PDF + video) → autosafe@o2.pl ──
+// ── Archive: ZIP → autosafe@o2.pl (Resend) ───────────────────────────────────
 app.post("/api/archive-and-send", async (req, res) => {
   try {
     const { protocolData: d } = req.body;
 
-    if (!process.env.SMTP_HOST || !process.env.SMTP_USER) {
-      return res.status(500).json({ error: "SMTP nie jest skonfigurowany. Uzupelnij SMTP_HOST, SMTP_USER, SMTP_PASS." });
-    }
-
-    const reg = (d.vehicle_registration || "BEZ_REJ").replace(/\s+/g, "");
+    const brand  = (d.vehicle_brand        || "MARKA").replace(/\s+/g, "_");
+    const model  = (d.vehicle_model        || "MODEL").replace(/\s+/g, "_");
+    const reg    = (d.vehicle_registration || "BEZ_REJ").replace(/\s+/g, "");
+    const vin    = (d.vehicle_vin          || "VIN").replace(/\s+/g, "");
     const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, "");
 
-    // Generate both PDFs in parallel
     const [clientPDF, archivePDF] = await Promise.all([
       buildPDFBuffer(d, false),
       buildPDFBuffer(d, true),
     ]);
 
-    // Build ZIP
     const zip = new JSZip();
     zip.file(`Protokol_klient_${reg}_${dateStr}.pdf`, clientPDF);
     zip.file(`Protokol_archiwum_${reg}_${dateStr}.pdf`, archivePDF);
 
-    // Add video if present
     if (d.install_video && typeof d.install_video === "string" && d.install_video.includes(",")) {
       const base64Data = d.install_video.split(",")[1];
       const mime = d.install_video.split(";")[0].replace("data:", "");
-      const ext = mime.includes("mp4") ? "mp4" : mime.includes("quicktime") ? "mov" : mime.includes("avi") ? "avi" : "mp4";
-      zip.file(`Nagranie_montaz_${reg}_${dateStr}.${ext}`, base64Data, { base64: true });
+      const ext = mime.includes("mp4") ? "mp4" : mime.includes("quicktime") ? "mov" : "mp4";
+      zip.file(`Nagranie_${reg}_${dateStr}.${ext}`, base64Data, { base64: true });
     }
 
     const zipBuf = await zip.generateAsync({ type: "nodebuffer", compression: "DEFLATE" });
-    const zipName = `Montaz_${reg}_${dateStr}.zip`;
+    const zipName = `${brand}_${model}_${reg}_${vin}.zip`;
 
-    const transporter = createTransporter();
-    await transporter.sendMail({
-      from: process.env.SMTP_FROM || process.env.SMTP_USER,
+    await sendViaResend({
       to: "autosafe@o2.pl",
-      subject: `Archiwum montazu — ${d.vehicle_brand} ${d.vehicle_model} ${reg} ${dateStr}`,
+      subject: `Archiwum montazu — ${d.vehicle_brand} ${d.vehicle_model} ${reg}`,
       html: `
         <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto">
           <h2>AutoSafe — Archiwum Montazu</h2>
@@ -448,13 +437,13 @@ app.post("/api/archive-and-send", async (req, res) => {
             <li><strong>Klient:</strong> ${d.client_name}</li>
             <li><strong>Pojazd:</strong> ${d.vehicle_brand} ${d.vehicle_model} (${d.vehicle_year})</li>
             <li><strong>Nr rej.:</strong> ${reg}</li>
-            <li><strong>VIN:</strong> ${d.vehicle_vin}</li>
+            <li><strong>VIN:</strong> ${vin}</li>
             <li><strong>Urządzenie:</strong> ${d.device_model || d.security_type}</li>
           </ul>
-          <p>Paczka ZIP zawiera: protokół jawny, protokół poufny ze zdjęciami montażu${d.install_video ? " oraz nagranie wideo" : ""}.</p>
+          <p>Paczka ZIP zawiera: protokół jawny, protokół poufny${d.install_video ? " oraz nagranie wideo" : ""}.</p>
         </div>
       `,
-      attachments: [{ filename: zipName, content: zipBuf, contentType: "application/zip" }],
+      attachments: [{ filename: zipName, content: zipBuf.toString("base64") }],
     });
 
     res.json({ success: true });
