@@ -40,8 +40,8 @@ const WhyUs = () => {
           <div className="relative">
             <div className="aspect-square rounded-2xl bg-card border border-border p-10 flex flex-col items-center justify-center text-center glow-blue">
               <div className="text-7xl font-bold text-primary mb-2">9+</div>
-              <div className="text-xl font-medium mb-1">Lat na rynku</div>
-              <div className="text-muted-foreground">i ciągle rośniemy</div>
+              <div className="text-xl font-medium mb-1">Lat doświadczenia w branży</div>
+              <div className="text-muted-foreground">naszych instalatorów</div>
               <div className="mt-8 grid grid-cols-2 gap-6 w-full">
                 <div className="p-4 rounded-lg bg-background">
                   <div className="text-2xl font-bold text-accent">98%</div>
