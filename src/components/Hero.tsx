@@ -47,7 +47,7 @@ const Hero = () => {
           <div className="flex gap-8 mt-14">
             {[
               { value: "500+", label: "Zabezpieczonych aut" },
-              { value: "9 lat", label: "Certyfikowanego doświadczenia instalatorów" },
+              { value: "9 lat", label: "Doświadczenia w branży zabezpieczeń" },
               { value: "100%", label: "Skuteczności" },
             ].map((stat) => (
               <div key={stat.label}>
