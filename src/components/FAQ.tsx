@@ -64,7 +64,7 @@ const faqCategories = [
         a: "Tak, systemy są demontowalne. Jeśli zmieniasz samochód, możemy zdemontować urządzenie z obecnego auta i po odpowiedniej rekonfiguracji zainstalować je w nowym pojeździe.",
       },
       {
-        q: "Czy system chroni przed kradzieżą „na lawetę"?",
+        q: 'Czy system chroni przed kradzieżą "na lawetę"?',
         a: "Tak. Nasze zaawansowane lokalizatory GPS posiadają akcelerometry, które wykrywają zmianę nachylenia auta lub ruch bez uruchomionego silnika i natychmiast wysyłają powiadomienie na Twój telefon.",
       },
     ],

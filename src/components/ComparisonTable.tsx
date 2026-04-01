@@ -1,7 +1,7 @@
 import { Check, X, ShieldAlert } from "lucide-react";
 
 const rows = [
-  { feature: "Ochrona przed relay attack (kradzież „na walizkę")", factory: false, autosafe: true },
+  { feature: 'Ochrona przed relay attack (kradzież "na walizkę")', factory: false, autosafe: true },
   { feature: "Blokada magistrali CAN", factory: false, autosafe: true },
   { feature: "Dodatkowa autoryzacja kierowcy (PIN / brelok)", factory: false, autosafe: true },
   { feature: "Lokalizacja GPS 24/7 z aplikacją mobilną", factory: false, autosafe: true },
