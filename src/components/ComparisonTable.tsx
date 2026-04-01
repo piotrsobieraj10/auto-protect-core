@@ -36,8 +36,8 @@ const ComparisonTable = () => {
             <thead>
               <tr className="bg-card">
                 <th className="text-left p-4 font-semibold text-sm">Funkcja</th>
-                <th className="text-center p-4 font-semibold text-sm w-36">Fabryczne</th>
-                <th className="text-center p-4 font-semibold text-sm w-36 text-primary">AutoSafe</th>
+                <th className="text-center p-4 font-semibold text-sm w-44">Immobilizer fabryczny</th>
+                <th className="text-center p-4 font-semibold text-sm w-44 text-primary">System AutoSafe</th>
               </tr>
             </thead>
             <tbody>
