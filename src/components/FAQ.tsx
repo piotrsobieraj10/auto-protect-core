@@ -4,63 +4,77 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { HelpCircle } from "lucide-react";
+import { HelpCircle, Shield, Settings, Truck } from "lucide-react";
 
-const faqs = [
+const faqCategories = [
   {
-    q: "Czy montaż wpływa na gwarancję pojazdu?",
-    a: "Montaż odbywa się cyfrowo przez magistralę CAN, bez przecinania instalacji. Jest to metoda bezinwazyjna, całkowicie bezpieczna dla gwarancji ASO.",
+    title: "Bezpieczeństwo i Gwarancja",
+    icon: Shield,
+    faqs: [
+      {
+        q: "Czy montaż wpływa na gwarancję pojazdu?",
+        a: "Nie. Stosujemy systemy bezinwazyjne, które współpracują z fabryczną instalacją pojazdu bez przecinania oryginalnych wiązek przewodów. Dzięki temu zachowujesz pełną gwarancję producenta, co potwierdzamy przy każdej instalacji.",
+      },
+      {
+        q: "Jak system chroni przed atakiem „walizką"?",
+        a: "System blokuje magistralę CAN, co uniemożliwia uruchomienie silnika, nawet jeśli złodziej przechwyci sygnał z Twojego kluczyka. Odjazd autem jest możliwy dopiero po dodatkowej autoryzacji kodem lub brelokiem.",
+      },
+      {
+        q: "Co oznacza homologacja E20?",
+        a: "To europejski certyfikat bezpieczeństwa, który potwierdza, że urządzenie zostało przetestowane pod kątem zakłóceń elektromagnetycznych i jest dopuszczone do użytku w samochodach na terenie całej Unii Europejskiej.",
+      },
+      {
+        q: "Czy montaż generuje błędy OBD?",
+        a: 'Absolutnie nie. Nasze systemy są "przezroczyste" dla komputerów diagnostycznych w autoryzowanych serwisach (ASO). Prawidłowo skonfigurowana blokada nie pozostawia śladów w pamięci błędów pojazdu.',
+      },
+    ],
   },
   {
-    q: "Jak korzystać z trybu serwisowego?",
-    a: "Przed oddaniem auta do warsztatu aktywuj tryb serwisowy. Zabezpieczenie staje się wtedy pasywne i niewykrywalne dla testerów diagnostycznych.",
+    title: "Eksploatacja i Komfort",
+    icon: Settings,
+    faqs: [
+      {
+        q: "Czy urządzenie rozładuje akumulator?",
+        a: "Nie. Montowane przez nas urządzenia posiadają tryb ultra-low-power i pobierają znikomą ilość prądu (poniżej normy dla fabrycznych systemów). Jest to całkowicie bezpieczne nawet przy kilkutygodniowym postoju auta.",
+      },
+      {
+        q: "Jak korzystać z trybu serwisowego?",
+        a: "Tryb serwisowy pozwala na tymczasowe uśpienie ochrony, np. gdy oddajesz auto do myjni lub mechanika. Aktywujesz go prostą kombinacją przycisków lub w aplikacji, dzięki czemu nie musisz zdradzać osobom trzecim, jak odblokowujesz auto.",
+      },
+      {
+        q: "Co zrobić w razie utraty telefonu lub breloka?",
+        a: "Każdy system posiada unikalny kod awaryjny (PIN), który otrzymasz od nas przy montażu. Pozwala on na jednorazowe odblokowanie auta i zaprogramowanie nowego urządzenia autoryzującego.",
+      },
+      {
+        q: "Jakie marki pojazdów są obsługiwane?",
+        a: "Nasze systemy są kompatybilne z niemal każdą marką na rynku. Specjalizujemy się w autach premium (BMW, Audi, Mercedes-Benz, Lexus, Volvo, Porsche, Land Rover, Jaguar), popularnych (Toyota, Mazda, Honda, Hyundai, Kia, Volkswagen, Skoda, Ford, Renault), elektrycznych i hybrydowych (Tesla i inne) oraz dostawczych (Mercedes Sprinter, Iveco Daily, Fiat Professional, Renault Master). Każdorazowo przed montażem przeprowadzamy pełną weryfikację kompatybilności z konkretnym numerem VIN.",
+      },
+    ],
   },
   {
-    q: "Jakie są dostępne metody autoryzacji?",
-    a: "Możesz odblokować odjazd za pomocą kodu PIN (przyciski na kierownicy/kokpicie), breloka Bluetooth ID lub aplikacji w telefonie.",
-  },
-  {
-    q: "Jak system chroni przed atakiem 'walizką'?",
-    a: "Rozwiązanie blokuje odjazd nawet po przechwyceniu sygnału z oryginalnego kluczyka. Bez dodatkowej autoryzacji silnik nie zapali.",
-  },
-  {
-    q: "Co oznacza homologacja E20?",
-    a: "Wszystkie stosowane urządzenia posiadają polską homologację E20, co jest gwarancją jakości i pozwala na zniżki w ubezpieczeniu AC.",
-  },
-  {
-    q: "Czy urządzenie rozładuje akumulator?",
-    a: "Urządzenia są ultra-energooszczędne (pobór rzędu 1–2 mA), co zapobiega rozładowaniu akumulatora nawet przy długim postoju.",
-  },
-  {
-    q: "Czy system chroni przed kradzieżą 'na lawetę'?",
-    a: "Możliwa jest współpraca z modułami GPS, powiadamiającymi o nieautoryzowanym ruchu pojazdu.",
-  },
-  {
-    q: "Co zrobić w razie utraty telefonu lub breloka?",
-    a: "W razie utraty telefonu lub breloka każdy zestaw posiada unikalny kod ratunkowy do natychmiastowego odblokowania auta.",
-  },
-  {
-    q: "Jakie marki pojazdów są obsługiwane?",
-    a: "Obsługujemy większość marek premium, hybryd oraz aut elektrycznych dostępnych na rynku.",
-  },
-  {
-    q: "Ile trwa montaż?",
-    a: "Instalacja trwa zazwyczaj od 2 do 4 godzin i jest wykonywana w sposób całkowicie dyskretny.",
-  },
-  {
-    q: "Czy urządzenie można przełożyć do innego auta?",
-    a: "Przy sprzedaży auta urządzenie można zdemontować i po aktualizacji oprogramowania zainstalować w nowym pojeździe.",
-  },
-  {
-    q: "Czy montaż generuje błędy OBD?",
-    a: "Profesjonalna instalacja nie generuje żadnych błędów w komputerze pokładowym pojazdu.",
+    title: "Logistyka i Serwis",
+    icon: Truck,
+    faqs: [
+      {
+        q: "Ile trwa montaż?",
+        a: "Standardowy montaż kompleksowego zabezpieczenia trwa zazwyczaj od 3 do 5 godzin. Dzięki naszej usłudze dojazdu do klienta w całym kraju, wykonujemy go w dogodnym dla Ciebie miejscu i czasie.",
+      },
+      {
+        q: "Czy urządzenie można przełożyć do innego auta?",
+        a: "Tak, systemy są demontowalne. Jeśli zmieniasz samochód, możemy zdemontować urządzenie z obecnego auta i po odpowiedniej rekonfiguracji zainstalować je w nowym pojeździe.",
+      },
+      {
+        q: "Czy system chroni przed kradzieżą „na lawetę"?",
+        a: "Tak. Nasze zaawansowane lokalizatory GPS posiadają akcelerometry, które wykrywają zmianę nachylenia auta lub ruch bez uruchomionego silnika i natychmiast wysyłają powiadomienie na Twój telefon.",
+      },
+    ],
   },
 ];
 
 const FAQ = () => {
   return (
     <section id="faq" className="py-24 bg-background">
-      <div className="container mx-auto px-6 max-w-3xl">
+      <div className="container mx-auto px-6 max-w-4xl">
         <div className="text-center mb-14">
           <div className="flex items-center justify-center gap-2 mb-3">
             <HelpCircle className="h-5 w-5 text-primary" />
@@ -77,22 +91,32 @@ const FAQ = () => {
           </p>
         </div>
 
-        <Accordion type="single" collapsible className="space-y-3">
-          {faqs.map((faq, i) => (
-            <AccordionItem
-              key={i}
-              value={`item-${i}`}
-              className="bg-card border border-border rounded-xl px-6 data-[state=open]:border-primary/50 transition-colors"
-            >
-              <AccordionTrigger className="text-left font-semibold text-base hover:text-primary hover:no-underline py-5 transition-colors">
-                {faq.q}
-              </AccordionTrigger>
-              <AccordionContent className="text-muted-foreground leading-relaxed pb-5">
-                {faq.a}
-              </AccordionContent>
-            </AccordionItem>
+        <div className="space-y-10">
+          {faqCategories.map((category) => (
+            <div key={category.title}>
+              <div className="flex items-center gap-2 mb-4">
+                <category.icon className="h-5 w-5 text-primary" />
+                <h3 className="text-lg font-semibold">{category.title}</h3>
+              </div>
+              <Accordion type="single" collapsible className="space-y-3">
+                {category.faqs.map((faq, i) => (
+                  <AccordionItem
+                    key={i}
+                    value={`${category.title}-${i}`}
+                    className="bg-card border border-border rounded-xl px-6 data-[state=open]:border-primary/50 transition-colors"
+                  >
+                    <AccordionTrigger className="text-left font-semibold text-base hover:text-primary hover:no-underline py-5 transition-colors">
+                      {faq.q}
+                    </AccordionTrigger>
+                    <AccordionContent className="text-muted-foreground leading-relaxed pb-5">
+                      {faq.a}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </div>
           ))}
-        </Accordion>
+        </div>
       </div>
     </section>
   );

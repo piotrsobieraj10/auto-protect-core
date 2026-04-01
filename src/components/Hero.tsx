@@ -27,10 +27,15 @@ const Hero = () => {
             <span className="text-gradient block">przed kradzieżą</span>
           </h1>
 
-          <p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-lg leading-relaxed">
+          <p className="text-lg md:text-xl text-muted-foreground mb-4 max-w-lg leading-relaxed">
             Wielopoziomowe systemy zabezpieczeń antykradzieżowych — blokady CAN, immobilizery, autoryzacja kierowcy.
             Profesjonalny montaż i pełna ochrona Twojego pojazdu.
           </p>
+
+          <div className="flex items-center gap-2 mb-10 px-4 py-2.5 rounded-lg bg-primary/10 border border-primary/20 w-fit">
+            <MapPin className="h-4 w-4 text-primary shrink-0" />
+            <span className="text-sm font-medium text-primary">Montaż u klienta – działamy na terenie całego kraju</span>
+          </div>
 
           <div className="flex flex-wrap gap-4">
             <Button variant="hero" size="lg" asChild>

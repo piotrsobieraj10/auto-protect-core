@@ -125,7 +125,7 @@ const Contact = () => {
               />
             </div>
             <Button variant="hero" size="lg" type="submit" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? "Wysyłanie..." : "Wyślij zapytanie"}
+              {isSubmitting ? "Wysyłanie..." : "Poproś o bezpłatną wycenę"}
             </Button>
           </form>
         </div>
