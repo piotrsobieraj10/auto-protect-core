@@ -6,7 +6,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 const Contact = () => {
-  const [formData, setFormData] = useState({ name: "", phone: "", message: "" });
+  const [formData, setFormData] = useState({ name: "", phone: "", vehicle: "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
