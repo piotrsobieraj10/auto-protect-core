@@ -1,14 +1,14 @@
 import { Check, X, ShieldAlert } from "lucide-react";
 
 const rows = [
+  { feature: "Ochrona przed kradzieżą na klucz (immobilizer)", factory: true, autosafe: true },
   { feature: 'Ochrona przed relay attack (kradzież "na walizkę")', factory: false, autosafe: true },
   { feature: "Blokada magistrali CAN", factory: false, autosafe: true },
   { feature: "Dodatkowa autoryzacja kierowcy (PIN / brelok)", factory: false, autosafe: true },
   { feature: "Lokalizacja GPS 24/7 z aplikacją mobilną", factory: false, autosafe: true },
   { feature: "Powiadomienia push o nieautoryzowanym ruchu", factory: false, autosafe: true },
+  { feature: "Ochrona przed kradzieżą na lawetę", factory: false, autosafe: true },
   { feature: "Ukryty montaż – niewykrywalny dla złodzieja", factory: false, autosafe: true },
-  { feature: "Alarm fabryczny z syreną", factory: true, autosafe: true },
-  { feature: "Immobilizer standardowy", factory: true, autosafe: true },
   { feature: "Homologacja E20", factory: false, autosafe: true },
 ];
 
