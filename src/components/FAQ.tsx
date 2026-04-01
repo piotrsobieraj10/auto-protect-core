@@ -16,7 +16,7 @@ const faqCategories = [
         a: "Nie. Stosujemy systemy bezinwazyjne, które współpracują z fabryczną instalacją pojazdu bez przecinania oryginalnych wiązek przewodów. Dzięki temu zachowujesz pełną gwarancję producenta, co potwierdzamy przy każdej instalacji.",
       },
       {
-        q: "Jak system chroni przed atakiem „walizką"?",
+        q: 'Jak system chroni przed atakiem "walizką"?',
         a: "System blokuje magistralę CAN, co uniemożliwia uruchomienie silnika, nawet jeśli złodziej przechwyci sygnał z Twojego kluczyka. Odjazd autem jest możliwy dopiero po dodatkowej autoryzacji kodem lub brelokiem.",
       },
       {
