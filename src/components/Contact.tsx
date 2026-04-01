@@ -27,7 +27,7 @@ const Contact = () => {
       if (!res.ok) throw new Error("Failed");
 
       toast.success("Dziękujemy! Skontaktujemy się wkrótce.");
-      setFormData({ name: "", phone: "", message: "" });
+      setFormData({ name: "", phone: "", vehicle: "", message: "" });
     } catch (error) {
       console.error("Error sending message:", error);
       toast.error("Nie udało się wysłać wiadomości. Spróbuj ponownie.");
