@@ -24,10 +24,10 @@ const ComparisonTable = () => {
             </span>
           </div>
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            Fabryczne vs <span className="text-gradient">AutoSafe</span>
+            Immobilizer fabryczny vs <span className="text-gradient">AutoSafe</span>
           </h2>
           <p className="text-lg text-muted-foreground">
-            Sprawdź, dlaczego fabryczne zabezpieczenia to za mało.
+            Sprawdź, dlaczego standardowy immobilizer nie chroni przed kradzieżą cyfrową.
           </p>
         </div>
 
