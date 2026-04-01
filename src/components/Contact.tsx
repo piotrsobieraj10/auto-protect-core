@@ -6,12 +6,12 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 const Contact = () => {
-  const [formData, setFormData] = useState({ name: "", phone: "", message: "" });
+  const [formData, setFormData] = useState({ name: "", phone: "", vehicle: "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name.trim() || !formData.phone.trim()) {
+    if (!formData.name.trim() || !formData.phone.trim() || !formData.vehicle.trim()) {
       toast.error("Wypełnij wymagane pola");
       return;
     }
@@ -27,7 +27,7 @@ const Contact = () => {
       if (!res.ok) throw new Error("Failed");
 
       toast.success("Dziękujemy! Skontaktujemy się wkrótce.");
-      setFormData({ name: "", phone: "", message: "" });
+      setFormData({ name: "", phone: "", vehicle: "", message: "" });
     } catch (error) {
       console.error("Error sending message:", error);
       toast.error("Nie udało się wysłać wiadomości. Spróbuj ponownie.");
@@ -105,6 +105,16 @@ const Contact = () => {
               />
             </div>
             <div>
+              <label className="text-sm text-muted-foreground mb-1.5 block">Marka, model i rok produkcji pojazdu *</label>
+              <Input
+                value={formData.vehicle}
+                onChange={(e) => setFormData({ ...formData, vehicle: e.target.value })}
+                placeholder="np. Toyota RAV4 2023"
+                className="bg-background border-border"
+                maxLength={100}
+              />
+            </div>
+            <div>
               <label className="text-sm text-muted-foreground mb-1.5 block">Wiadomość</label>
               <Textarea
                 value={formData.message}
@@ -115,7 +125,7 @@ const Contact = () => {
               />
             </div>
             <Button variant="hero" size="lg" type="submit" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? "Wysyłanie..." : "Wyślij zapytanie"}
+              {isSubmitting ? "Wysyłanie..." : "Poproś o bezpłatną wycenę"}
             </Button>
           </form>
         </div>

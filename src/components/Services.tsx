@@ -1,41 +1,44 @@
-import { MapPin, CreditCard, Shield, Locate, Truck, Lock } from "lucide-react";
+import { Shield, Locate, Truck, Check } from "lucide-react";
 
-const services = [
+const packages = [
   {
     icon: Shield,
-    title: "Zabezpieczenia antykradzieżowe",
-    description:
-      "Blokady CAN, immobilizery, autoryzacja kierowcy. Wielopoziomowa ochrona przed kradzieżą i włamaniem do pojazdu.",
-  },
-  {
-    icon: Lock,
-    title: "Odzyskiwanie pojazdów",
-    description:
-      "Ukryte systemy śledzenia do odzyskiwania skradzionych pojazdów. Współpraca z policją w celu szybkiego zlokalizowania pojazdu.",
-  },
-  {
-    icon: MapPin,
-    title: "Lokalizatory GPS",
-    description:
-      "Montaż profesjonalnych lokalizatorów GPS z monitoringiem w czasie rzeczywistym. Śledź pozycję pojazdu 24/7 z aplikacji mobilnej.",
+    name: "Pakiet Ochrona",
+    description: "Kompleksowe zabezpieczenie antykradzieżowe Twojego pojazdu.",
+    features: [
+      "Blokada magistrali CAN",
+      "Immobilizer cyfrowy",
+      "Autoryzacja kierowcy (PIN / brelok / aplikacja)",
+      "Homologacja E20",
+      "Tryb serwisowy",
+    ],
+    highlighted: false,
   },
   {
     icon: Locate,
-    title: "Zarządzanie flotą",
-    description:
-      "Kompleksowe systemy zarządzania flotą pojazdów. Kontrola trasy, zużycia paliwa i stylu jazdy kierowców.",
-  },
-  {
-    icon: CreditCard,
-    title: "System eToll",
-    description:
-      "Instalacja urządzeń OBU do systemu eToll. Pełna zgodność z wymaganiami KAS. Profesjonalny montaż i konfiguracja urządzenia.",
+    name: "Pakiet Monitoring",
+    description: "Pełna ochrona + śledzenie pojazdu w czasie rzeczywistym.",
+    features: [
+      "Wszystko z Pakietu Ochrona",
+      "Ukryty lokalizator GPS",
+      "Aplikacja mobilna 24/7",
+      "Powiadomienia o nieautoryzowanym ruchu",
+      "Historia tras i postojów",
+    ],
+    highlighted: true,
   },
   {
     icon: Truck,
-    title: "Czujniki i telematyka",
-    description:
-      "Montaż czujników temperatury, otwarcia drzwi, poziomu paliwa. Pełna telematyka dla pojazdów dostawczych.",
+    name: "Pakiet Biznes",
+    description: "Rozwiązanie dla firm i zarządzania flotą pojazdów.",
+    features: [
+      "Wszystko z Pakietu Monitoring",
+      "System eToll (urządzenie OBU)",
+      "Telematyka flotowa",
+      "Raporty zużycia paliwa i stylu jazdy",
+      "Czujniki temperatury i otwarcia drzwi",
+    ],
+    highlighted: false,
   },
 ];
 
@@ -45,22 +48,44 @@ const Services = () => {
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
           <span className="text-sm font-medium tracking-widest uppercase text-primary mb-3 block">
-            Co oferujemy
+            Oferta
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold">Nasze usługi</h2>
+          <h2 className="text-4xl md:text-5xl font-bold mb-4">
+            Pakiety <span className="text-gradient">usług</span>
+          </h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Wybierz poziom ochrony dopasowany do Twoich potrzeb.
+          </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {services.map((service) => (
+        <div className="grid md:grid-cols-3 gap-6">
+          {packages.map((pkg) => (
             <div
-              key={service.title}
-              className="group p-8 rounded-xl bg-background border border-border hover:border-primary/30 transition-all duration-300 hover:glow-blue"
+              key={pkg.name}
+              className={`relative group p-8 rounded-xl border transition-all duration-300 flex flex-col ${
+                pkg.highlighted
+                  ? "bg-primary/5 border-primary/40 glow-blue"
+                  : "bg-background border-border hover:border-primary/30"
+              }`}
             >
-              <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-5 group-hover:bg-primary/20 transition-colors">
-                <service.icon className="h-6 w-6 text-primary" />
+              {pkg.highlighted && (
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-primary text-primary-foreground text-xs font-semibold">
+                  Najpopularniejszy
+                </div>
+              )}
+              <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-5">
+                <pkg.icon className="h-6 w-6 text-primary" />
               </div>
-              <h3 className="text-xl font-semibold mb-3">{service.title}</h3>
-              <p className="text-muted-foreground leading-relaxed">{service.description}</p>
+              <h3 className="text-2xl font-bold mb-2">{pkg.name}</h3>
+              <p className="text-muted-foreground mb-6">{pkg.description}</p>
+              <ul className="space-y-3 mt-auto">
+                {pkg.features.map((feature) => (
+                  <li key={feature} className="flex items-start gap-2">
+                    <Check className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                    <span className="text-sm">{feature}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
           ))}
         </div>
