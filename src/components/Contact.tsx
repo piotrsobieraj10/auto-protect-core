@@ -11,7 +11,7 @@ const Contact = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name.trim() || !formData.phone.trim()) {
+    if (!formData.name.trim() || !formData.phone.trim() || !formData.vehicle.trim()) {
       toast.error("Wypełnij wymagane pola");
       return;
     }
