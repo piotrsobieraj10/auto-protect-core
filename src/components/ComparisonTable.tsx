@@ -1,14 +1,14 @@
 import { Check, X, ShieldAlert } from "lucide-react";
 
 const rows = [
+  { feature: "Ochrona przed kradzieżą na klucz (immobilizer)", factory: true, autosafe: true },
   { feature: 'Ochrona przed relay attack (kradzież "na walizkę")', factory: false, autosafe: true },
   { feature: "Blokada magistrali CAN", factory: false, autosafe: true },
   { feature: "Dodatkowa autoryzacja kierowcy (PIN / brelok)", factory: false, autosafe: true },
   { feature: "Lokalizacja GPS 24/7 z aplikacją mobilną", factory: false, autosafe: true },
   { feature: "Powiadomienia push o nieautoryzowanym ruchu", factory: false, autosafe: true },
+  { feature: "Ochrona przed kradzieżą na lawetę", factory: false, autosafe: true },
   { feature: "Ukryty montaż – niewykrywalny dla złodzieja", factory: false, autosafe: true },
-  { feature: "Alarm fabryczny z syreną", factory: true, autosafe: true },
-  { feature: "Immobilizer standardowy", factory: true, autosafe: true },
   { feature: "Homologacja E20", factory: false, autosafe: true },
 ];
 
@@ -24,10 +24,10 @@ const ComparisonTable = () => {
             </span>
           </div>
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            Fabryczne vs <span className="text-gradient">AutoSafe</span>
+            Immobilizer fabryczny vs <span className="text-gradient">AutoSafe</span>
           </h2>
           <p className="text-lg text-muted-foreground">
-            Sprawdź, dlaczego fabryczne zabezpieczenia to za mało.
+            Sprawdź, dlaczego standardowy immobilizer nie chroni przed kradzieżą cyfrową.
           </p>
         </div>
 
@@ -36,8 +36,8 @@ const ComparisonTable = () => {
             <thead>
               <tr className="bg-card">
                 <th className="text-left p-4 font-semibold text-sm">Funkcja</th>
-                <th className="text-center p-4 font-semibold text-sm w-36">Fabryczne</th>
-                <th className="text-center p-4 font-semibold text-sm w-36 text-primary">AutoSafe</th>
+                <th className="text-center p-4 font-semibold text-sm w-44">Immobilizer fabryczny</th>
+                <th className="text-center p-4 font-semibold text-sm w-44 text-primary">System AutoSafe</th>
               </tr>
             </thead>
             <tbody>
