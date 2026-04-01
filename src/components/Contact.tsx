@@ -105,6 +105,16 @@ const Contact = () => {
               />
             </div>
             <div>
+              <label className="text-sm text-muted-foreground mb-1.5 block">Marka, model i rok produkcji pojazdu *</label>
+              <Input
+                value={formData.vehicle}
+                onChange={(e) => setFormData({ ...formData, vehicle: e.target.value })}
+                placeholder="np. Toyota RAV4 2023"
+                className="bg-background border-border"
+                maxLength={100}
+              />
+            </div>
+            <div>
               <label className="text-sm text-muted-foreground mb-1.5 block">Wiadomość</label>
               <Textarea
                 value={formData.message}
