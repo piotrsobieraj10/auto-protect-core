@@ -42,7 +42,7 @@ const CarBrands = () => {
   return (
     <section className="py-16 bg-card border-t border-border">
       <div className="container mx-auto px-6">
-        <div className="text-center mb-12">
+        <div className="text-center mb-10">
           <span className="text-sm font-medium tracking-widest uppercase text-primary mb-3 block">
             Kompatybilność
           </span>
@@ -50,29 +50,29 @@ const CarBrands = () => {
             Zabezpieczamy pojazdy <span className="text-gradient">wszystkich marek</span>
           </h2>
         </div>
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-9 gap-x-4 gap-y-8 max-w-5xl mx-auto">
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-9 gap-6 max-w-5xl mx-auto">
           {brands.map((brand) => (
             <div
               key={brand.name}
-              className="flex flex-col items-center gap-3 group"
+              className="flex flex-col items-center gap-2 group"
             >
-              <div className="w-16 h-16 md:w-20 md:h-20 flex items-center justify-center rounded-xl bg-background/50 border border-border group-hover:border-primary/40 transition-all duration-300 p-3">
+              <div className="w-16 h-16 flex items-center justify-center rounded-xl bg-background border border-border group-hover:border-primary/30 transition-colors p-2">
                 <img
                   src={brand.logo}
                   alt={`Logo ${brand.name}`}
                   loading="lazy"
-                  width={64}
-                  height={64}
-                  className="w-full h-full object-contain invert opacity-80 group-hover:opacity-100 transition-opacity duration-300"
+                  width={48}
+                  height={48}
+                  className="w-12 h-12 object-contain"
                 />
               </div>
-              <span className="text-xs font-medium text-muted-foreground group-hover:text-foreground transition-colors text-center leading-tight">
+              <span className="text-xs font-medium text-muted-foreground group-hover:text-primary transition-colors text-center leading-tight">
                 {brand.name}
               </span>
             </div>
           ))}
         </div>
-        <p className="text-center text-sm text-muted-foreground mt-10">
+        <p className="text-center text-sm text-muted-foreground mt-8">
           …i wiele innych. Przed montażem weryfikujemy kompatybilność z Twoim VIN.
         </p>
       </div>
