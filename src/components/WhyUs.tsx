@@ -48,7 +48,7 @@ const WhyUs = () => {
                   <div className="text-xs text-muted-foreground">Zadowolonych klientów</div>
                 </div>
                 <div className="p-4 rounded-lg bg-background">
-                  <div className="text-2xl font-bold text-accent">500+</div>
+                  <div className="text-2xl font-bold text-accent">2000+</div>
                   <div className="text-xs text-muted-foreground">Wykonanych montaży</div>
                 </div>
               </div>
