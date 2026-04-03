@@ -23,6 +23,7 @@ const Index = () => {
       <FAQ />
       <Contact />
       <Footer />
+      <FloatingContact />
     </div>
   );
 };
