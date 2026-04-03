@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Phone, Mail, MapPin } from "lucide-react";
+import { Phone, Mail, MapPin, MessageCircle } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -26,7 +26,7 @@ const Contact = () => {
 
       if (!res.ok) throw new Error("Failed");
 
-      toast.success("Dziękujemy! Skontaktujemy się wkrótce.");
+      toast.success("Dziękujemy! Skontaktuję się wkrótce.");
       setFormData({ name: "", phone: "", vehicle: "", message: "" });
     } catch (error) {
       console.error("Error sending message:", error);
@@ -48,7 +48,7 @@ const Contact = () => {
               Umów się na <span className="text-gradient">montaż</span>
             </h2>
             <p className="text-lg text-muted-foreground mb-10 leading-relaxed">
-              Skontaktuj się z nami, aby omówić potrzeby Twojego pojazdu.
+              Skontaktuj się ze mną, aby omówić zabezpieczenie Twojego pojazdu.
               Bezpłatna wycena i doradztwo.
             </p>
 
@@ -58,16 +58,18 @@ const Contact = () => {
                   <Phone className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <div className="text-sm text-muted-foreground">Telefon</div>
-                  <div className="font-medium">512 732 864</div>
+                  <div className="text-sm text-muted-foreground">📞 Zadzwoń teraz – szybka wycena w 2 minuty</div>
+                  <div className="font-medium text-lg">
+                    <a href="tel:+48512732864" className="hover:text-primary transition-colors">512 732 864</a>
+                  </div>
                 </div>
               </div>
               <div className="flex items-center gap-4">
                 <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <Mail className="h-5 w-5 text-primary" />
+                  <MessageCircle className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <div className="text-sm text-muted-foreground">Email</div>
+                  <div className="text-sm text-muted-foreground">Odpowiadam tego samego dnia</div>
                   <div className="font-medium">autosafe@o2.pl</div>
                 </div>
               </div>
@@ -76,8 +78,8 @@ const Contact = () => {
                   <MapPin className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <div className="text-sm text-muted-foreground">Adres</div>
-                  <div className="font-medium">Zakrzewska Wola 85C, 26-652 Zakrzew</div>
+                  <div className="text-sm text-muted-foreground">Zasięg usług</div>
+                  <div className="font-medium">Radom i okolice + dojazd w całej Polsce</div>
                 </div>
               </div>
             </div>
