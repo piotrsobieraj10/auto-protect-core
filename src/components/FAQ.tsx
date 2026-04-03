@@ -13,7 +13,7 @@ const faqCategories = [
     faqs: [
       {
         q: "Czy montaż wpływa na gwarancję pojazdu?",
-        a: "Nie. Stosujemy systemy bezinwazyjne, które współpracują z fabryczną instalacją pojazdu bez przecinania oryginalnych wiązek przewodów. Dzięki temu zachowujesz pełną gwarancję producenta, co potwierdzamy przy każdej instalacji.",
+        a: "Nie. Stosuję systemy bezinwazyjne, które współpracują z fabryczną instalacją pojazdu bez przecinania oryginalnych wiązek przewodów. Dzięki temu zachowujesz pełną gwarancję producenta, co potwierdzam przy każdej instalacji.",
       },
       {
         q: 'Jak system chroni przed atakiem "walizką"?',
@@ -25,7 +25,7 @@ const faqCategories = [
       },
       {
         q: "Czy montaż generuje błędy OBD?",
-        a: 'Absolutnie nie. Nasze systemy są "przezroczyste" dla komputerów diagnostycznych w autoryzowanych serwisach (ASO). Prawidłowo skonfigurowana blokada nie pozostawia śladów w pamięci błędów pojazdu.',
+        a: 'Absolutnie nie. Systemy, które montuję, są "przezroczyste" dla komputerów diagnostycznych w autoryzowanych serwisach (ASO). Prawidłowo skonfigurowana blokada nie pozostawia śladów w pamięci błędów pojazdu.',
       },
     ],
   },
@@ -35,7 +35,7 @@ const faqCategories = [
     faqs: [
       {
         q: "Czy urządzenie rozładuje akumulator?",
-        a: "Nie. Montowane przez nas urządzenia posiadają tryb ultra-low-power i pobierają znikomą ilość prądu (poniżej normy dla fabrycznych systemów). Jest to całkowicie bezpieczne nawet przy kilkutygodniowym postoju auta.",
+        a: "Nie. Montowane przeze mnie urządzenia posiadają tryb ultra-low-power i pobierają znikomą ilość prądu (poniżej normy dla fabrycznych systemów). Jest to całkowicie bezpieczne nawet przy kilkutygodniowym postoju auta.",
       },
       {
         q: "Jak korzystać z trybu serwisowego?",
@@ -43,11 +43,11 @@ const faqCategories = [
       },
       {
         q: "Co zrobić w razie utraty telefonu lub breloka?",
-        a: "Każdy system posiada unikalny kod awaryjny (PIN), który otrzymasz od nas przy montażu. Pozwala on na jednorazowe odblokowanie auta i zaprogramowanie nowego urządzenia autoryzującego.",
+        a: "Każdy system posiada unikalny kod awaryjny (PIN), który otrzymasz ode mnie przy montażu. Pozwala on na jednorazowe odblokowanie auta i zaprogramowanie nowego urządzenia autoryzującego.",
       },
       {
         q: "Jakie marki pojazdów są obsługiwane?",
-        a: "Nasze systemy są kompatybilne z niemal każdą marką na rynku. Specjalizujemy się w autach premium (BMW, Audi, Mercedes-Benz, Lexus, Volvo, Porsche, Land Rover, Jaguar), popularnych (Toyota, Mazda, Honda, Hyundai, Kia, Volkswagen, Skoda, Ford, Renault), elektrycznych i hybrydowych (Tesla i inne) oraz dostawczych (Mercedes Sprinter, Iveco Daily, Fiat Professional, Renault Master). Każdorazowo przed montażem przeprowadzamy pełną weryfikację kompatybilności z konkretnym numerem VIN.",
+        a: "Systemy, które montuję, są kompatybilne z niemal każdą marką na rynku. Specjalizuję się w autach premium (BMW, Audi, Mercedes-Benz, Lexus, Volvo, Porsche, Land Rover, Jaguar), popularnych (Toyota, Mazda, Honda, Hyundai, Kia, Volkswagen, Skoda, Ford, Renault), elektrycznych i hybrydowych (Tesla i inne) oraz dostawczych (Mercedes Sprinter, Iveco Daily, Fiat Professional, Renault Master). Każdorazowo przed montażem przeprowadzam pełną weryfikację kompatybilności z konkretnym numerem VIN.",
       },
     ],
   },
@@ -57,15 +57,15 @@ const faqCategories = [
     faqs: [
       {
         q: "Ile trwa montaż?",
-        a: "Standardowy montaż kompleksowego zabezpieczenia trwa zazwyczaj od 3 do 5 godzin. Dzięki naszej usłudze dojazdu do klienta w całym kraju, wykonujemy go w dogodnym dla Ciebie miejscu i czasie.",
+        a: "Standardowy montaż kompleksowego zabezpieczenia trwa zazwyczaj od 3 do 5 godzin. Dojeżdżam do klienta w Radomiu i okolicach, a na terenie całej Polski – ustalane indywidualnie.",
       },
       {
         q: "Czy urządzenie można przełożyć do innego auta?",
-        a: "Tak, systemy są demontowalne. Jeśli zmieniasz samochód, możemy zdemontować urządzenie z obecnego auta i po odpowiedniej rekonfiguracji zainstalować je w nowym pojeździe.",
+        a: "Tak, systemy są demontowalne. Jeśli zmieniasz samochód, mogę zdemontować urządzenie z obecnego auta i po odpowiedniej rekonfiguracji zainstalować je w nowym pojeździe.",
       },
       {
         q: 'Czy system chroni przed kradzieżą "na lawetę"?',
-        a: "Tak. Nasze zaawansowane lokalizatory GPS posiadają akcelerometry, które wykrywają zmianę nachylenia auta lub ruch bez uruchomionego silnika i natychmiast wysyłają powiadomienie na Twój telefon.",
+        a: "Tak. Zaawansowane lokalizatory GPS, które montuję, posiadają akcelerometry wykrywające zmianę nachylenia auta lub ruch bez uruchomionego silnika – natychmiast wysyłają powiadomienie na Twój telefon.",
       },
     ],
   },
@@ -86,7 +86,7 @@ const FAQ = () => {
             Często zadawane <span className="text-gradient">pytania</span>
           </h2>
           <p className="text-lg text-muted-foreground">
-            Znajdź odpowiedzi na najczęstsze pytania dotyczące naszych systemów
+            Znajdź odpowiedzi na najczęstsze pytania dotyczące montowanych przeze mnie systemów
             zabezpieczeń.
           </p>
         </div>

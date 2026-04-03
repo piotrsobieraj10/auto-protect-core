@@ -82,7 +82,7 @@ const AntiTheft = () => {
               <p className="text-muted-foreground leading-relaxed mb-6">
                 W Polsce co roku kradzionych jest ponad 10 000 pojazdów. Nowoczesne metody kradzieży
                 pozwalają złodziejom otworzyć i uruchomić auto w kilkadziesiąt sekund.
-                Nasze systemy skutecznie temu zapobiegają.
+                Montuję systemy, które skutecznie temu zapobiegają.
               </p>
               <Button variant="hero" size="lg" asChild>
                 <a href="#kontakt">Zabezpiecz swoje auto</a>

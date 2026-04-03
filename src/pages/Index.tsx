@@ -1,8 +1,10 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import AntiTheft from "@/components/AntiTheft";
+import HowItWorks from "@/components/HowItWorks";
 import Services from "@/components/Services";
 import ComparisonTable from "@/components/ComparisonTable";
+import ForWhom from "@/components/ForWhom";
 import WhyUs from "@/components/WhyUs";
 import CarBrands from "@/components/CarBrands";
 import FAQ from "@/components/FAQ";
@@ -16,8 +18,10 @@ const Index = () => {
       <Navbar />
       <Hero />
       <AntiTheft />
+      <HowItWorks />
       <Services />
       <ComparisonTable />
+      <ForWhom />
       <WhyUs />
       <CarBrands />
       <FAQ />
