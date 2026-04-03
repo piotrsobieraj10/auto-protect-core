@@ -8,6 +8,7 @@ import CarBrands from "@/components/CarBrands";
 import FAQ from "@/components/FAQ";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
+import FloatingContact from "@/components/FloatingContact";
 
 const Index = () => {
   return (
