@@ -101,13 +101,13 @@ const ProtocolStepper = ({ onBack }: ProtocolStepperProps) => {
   const handleGeneratePDF = async (isArchive: boolean = false) => {
     setIsGenerating(true);
     try {
-      const res = await fetch("/api/generate-protocol-pdf", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ protocolData: data, isArchive }),
+      const { data: pdfData, error } = await supabase.functions.invoke("generate-protocol-pdf", {
+        body: { protocolData: data, isArchive },
       });
-      if (!res.ok) throw new Error("Failed to generate PDF");
-      const blob = await res.blob();
+      if (error) throw error;
+
+      // pdfData is already a Blob when Content-Type is application/pdf
+      const blob = pdfData instanceof Blob ? pdfData : new Blob([pdfData], { type: "application/pdf" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
