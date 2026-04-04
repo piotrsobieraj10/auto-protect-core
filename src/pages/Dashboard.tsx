@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Wrench, Lock, ShieldCheck, AlertCircle } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import ProtocolStepper from "@/components/ProtocolStepper";
+import { supabase } from "@/integrations/supabase/client";
 
 const Dashboard = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
