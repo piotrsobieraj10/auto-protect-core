@@ -220,7 +220,7 @@ const ProtocolStepper = ({ onBack }: ProtocolStepperProps) => {
         </Card>
 
         {/* Navigation */}
-        <div className="flex gap-3 justify-between mb-6">
+        <div className="flex flex-col sm:flex-row gap-3 justify-between mb-6">
           <Button
             variant="outline"
             onClick={handlePrev}
@@ -232,22 +232,22 @@ const ProtocolStepper = ({ onBack }: ProtocolStepperProps) => {
           </Button>
 
           {isLastStep ? (
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <Button
                 onClick={() => handleGeneratePDF(false)}
                 disabled={isGenerating}
-                className="bg-blue-600 hover:bg-blue-700 rounded-xl"
+                className="bg-blue-600 hover:bg-blue-700 rounded-xl text-sm"
               >
                 <FileText className="w-4 h-4 mr-2" />
-                {isGenerating ? "Generowanie..." : "Protokół dla klienta"}
+                {isGenerating ? "Generowanie..." : "Protokół klienta"}
               </Button>
               <Button
                 onClick={() => handleGeneratePDF(true)}
                 disabled={isGenerating}
-                className="bg-amber-600 hover:bg-amber-700 rounded-xl"
+                className="bg-amber-600 hover:bg-amber-700 rounded-xl text-sm"
               >
                 <FileText className="w-4 h-4 mr-2" />
-                {isGenerating ? "Generowanie..." : "Archiwum (z danymi)"}
+                {isGenerating ? "Generowanie..." : "Archiwum"}
               </Button>
             </div>
           ) : (
