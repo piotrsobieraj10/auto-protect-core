@@ -19,12 +19,11 @@ const Dashboard = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch("/api/auth/panel-login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password }),
+      const { data: result, error } = await supabase.functions.invoke("panel-login", {
+        body: { password },
       });
-      if (res.ok) {
+      if (error) throw error;
+      if (result?.success) {
         setIsAuthenticated(true);
         setError(false);
       } else {
