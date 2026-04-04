@@ -130,13 +130,10 @@ const ProtocolStepper = ({ onBack }: ProtocolStepperProps) => {
     if (!clientEmail) { toast.error("Podaj adres e-mail klienta."); return; }
     setIsSendingClient(true);
     try {
-      const res = await fetch("/api/send-client-pdf", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ protocolData: data, clientEmail }),
+      const { data: result, error } = await supabase.functions.invoke("send-protocol-email", {
+        body: { ...data, clientEmail, type: "client" },
       });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.error || "Błąd wysyłki");
+      if (error) throw error;
       toast.success(`Protokół wysłany na ${clientEmail}`);
     } catch (err: any) {
       toast.error(err.message || "Błąd wysyłki protokołu do klienta.");
@@ -148,14 +145,11 @@ const ProtocolStepper = ({ onBack }: ProtocolStepperProps) => {
   const handleArchiveAndSend = async () => {
     setIsSendingArchive(true);
     try {
-      const res = await fetch("/api/archive-and-send", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ protocolData: data }),
+      const { data: result, error } = await supabase.functions.invoke("send-protocol-email", {
+        body: { ...data, type: "archive" },
       });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.error || "Błąd archiwizacji");
-      toast.success("Archiwum ZIP wysłane do AutoSafe!");
+      if (error) throw error;
+      toast.success("Archiwum wysłane do AutoSafe!");
     } catch (err: any) {
       toast.error(err.message || "Błąd archiwizacji i wysyłki.");
     } finally {
