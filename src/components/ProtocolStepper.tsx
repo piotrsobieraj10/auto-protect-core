@@ -10,6 +10,7 @@ import StepSpecification from "./protocol-steps/StepSpecification";
 import StepServiceData from "./protocol-steps/StepServiceData";
 import StepTestsAndAcceptance from "./protocol-steps/StepTestsAndAcceptance";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 interface ProtocolData {
   client_name: string;
