@@ -103,11 +103,32 @@ const ProtocolStepper = ({ onBack }: ProtocolStepperProps) => {
     try {
       const { data: pdfData, error } = await supabase.functions.invoke("generate-protocol-pdf", {
         body: { protocolData: data, isArchive },
+        headers: { Accept: 'application/pdf' },
       });
       if (error) throw error;
 
-      // pdfData is already a Blob when Content-Type is application/pdf
-      const blob = pdfData instanceof Blob ? pdfData : new Blob([pdfData], { type: "application/pdf" });
+      // Ensure we have a proper PDF blob
+      let blob: Blob;
+      if (pdfData instanceof Blob) {
+        blob = pdfData.type === 'application/pdf' ? pdfData : new Blob([pdfData], { type: "application/pdf" });
+      } else if (pdfData instanceof ArrayBuffer) {
+        blob = new Blob([pdfData], { type: "application/pdf" });
+      } else {
+        // If data came back as parsed text/object, fetch raw
+        const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+        const anonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+        const resp = await fetch(`https://${projectId}.supabase.co/functions/v1/generate-protocol-pdf`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${anonKey}`,
+            'apikey': anonKey,
+          },
+          body: JSON.stringify({ protocolData: data, isArchive }),
+        });
+        if (!resp.ok) throw new Error('PDF generation failed');
+        blob = await resp.blob();
+      }
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
