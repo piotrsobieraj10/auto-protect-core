@@ -1,23 +1,35 @@
-import { useState } from "react";
-import { X } from "lucide-react";
+import { useEffect, useCallback } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import useEmblaCarousel from "embla-carousel-react";
 import gallery1 from "@/assets/gallery-1.jpg";
 import gallery2 from "@/assets/gallery-2.jpg";
 import gallery3 from "@/assets/gallery-3.jpg";
 import gallery4 from "@/assets/gallery-4.jpg";
 import gallery5 from "@/assets/gallery-5.jpg";
 import gallery6 from "@/assets/gallery-6.jpg";
+import gallery7 from "@/assets/gallery-7.jpg";
 
 const images = [
-  { src: gallery1, alt: "Montaż systemu alarmowego w pojeździe", label: "System alarmowy" },
-  { src: gallery2, alt: "Instalacja lokalizatora GPS", label: "Lokalizator GPS" },
-  { src: gallery3, alt: "SUV w warsztacie - montaż zabezpieczeń", label: "Zabezpieczenie SUV" },
-  { src: gallery4, alt: "Moduł immobilizera CAN", label: "Immobilizer CAN" },
-  { src: gallery5, alt: "Ochrona Keyless Entry", label: "Ochrona Keyless" },
-  { src: gallery6, alt: "Montaż modułu w podsufitce", label: "Ukryty montaż" },
+  { src: gallery1, alt: "Mercedes GLE - montaż zabezpieczeń", label: "Mercedes GLE" },
+  { src: gallery2, alt: "Mercedes CLA - instalacja systemu", label: "Mercedes CLA" },
+  { src: gallery3, alt: "BMW 5 - montaż antykradzieżowy", label: "BMW Seria 5" },
+  { src: gallery4, alt: "Land Rover Sport - zabezpieczenie", label: "Land Rover Sport" },
+  { src: gallery5, alt: "Mercedes 63S AMG - ochrona pojazdu", label: "Mercedes 63S AMG" },
+  { src: gallery6, alt: "Toyota Corolla - lokalizator GPS", label: "Toyota Corolla" },
+  { src: gallery7, alt: "Ford Ranger - system alarmowy", label: "Ford Ranger" },
 ];
 
 const Gallery = () => {
-  const [selected, setSelected] = useState<number | null>(null);
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    const interval = setInterval(() => emblaApi.scrollNext(), 4000);
+    return () => clearInterval(interval);
+  }, [emblaApi]);
+
+  const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
+  const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
 
   return (
     <section id="galeria" className="py-16 md:py-24 bg-secondary/30">
@@ -27,53 +39,51 @@ const Gallery = () => {
             Nasze <span className="text-primary">realizacje</span>
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Zobacz jak wygląda profesjonalny montaż zabezpieczeń antykradzieżowych w naszym warsztacie.
+            Zobacz pojazdy, które zabezpieczyliśmy profesjonalnymi systemami antykradzieżowymi.
           </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
-          {images.map((img, i) => (
-            <button
-              key={i}
-              onClick={() => setSelected(i)}
-              className="group relative overflow-hidden rounded-lg aspect-[4/3] focus:outline-none focus:ring-2 focus:ring-primary"
-            >
-              <img
-                src={img.src}
-                alt={img.alt}
-                loading="lazy"
-                width={640}
-                height={512}
-                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
-                <span className="text-sm font-medium text-foreground">{img.label}</span>
-              </div>
-            </button>
-          ))}
+        <div className="relative">
+          <div className="overflow-hidden rounded-xl" ref={emblaRef}>
+            <div className="flex">
+              {images.map((img, i) => (
+                <div key={i} className="min-w-0 shrink-0 grow-0 basis-full">
+                  <div className="relative aspect-video">
+                    <img
+                      src={img.src}
+                      alt={img.alt}
+                      loading={i === 0 ? undefined : "lazy"}
+                      width={1280}
+                      height={720}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-background/80 to-transparent p-4 md:p-6">
+                      <span className="text-lg md:text-xl font-semibold text-foreground">
+                        {img.label}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <button
+            onClick={scrollPrev}
+            className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 bg-background/70 hover:bg-background/90 text-foreground rounded-full p-2 md:p-3 transition-colors backdrop-blur-sm"
+            aria-label="Poprzednie zdjęcie"
+          >
+            <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
+          </button>
+          <button
+            onClick={scrollNext}
+            className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 bg-background/70 hover:bg-background/90 text-foreground rounded-full p-2 md:p-3 transition-colors backdrop-blur-sm"
+            aria-label="Następne zdjęcie"
+          >
+            <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
+          </button>
         </div>
       </div>
-
-      {/* Lightbox */}
-      {selected !== null && (
-        <div
-          className="fixed inset-0 z-50 bg-background/90 flex items-center justify-center p-4"
-          onClick={() => setSelected(null)}
-        >
-          <button
-            onClick={() => setSelected(null)}
-            className="absolute top-4 right-4 text-foreground hover:text-primary transition-colors"
-          >
-            <X className="w-8 h-8" />
-          </button>
-          <img
-            src={images[selected].src}
-            alt={images[selected].alt}
-            className="max-w-full max-h-[85vh] rounded-lg object-contain"
-            onClick={(e) => e.stopPropagation()}
-          />
-        </div>
-      )}
     </section>
   );
 };
