@@ -101,13 +101,19 @@ const ProtocolStepper = ({ onBack }: ProtocolStepperProps) => {
   const handleGeneratePDF = async (isArchive: boolean = false) => {
     setIsGenerating(true);
     try {
-      const { data: pdfData, error } = await supabase.functions.invoke("generate-protocol-pdf", {
-        body: { protocolData: data, isArchive },
+      const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+      const anonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+      const resp = await fetch(`https://${projectId}.supabase.co/functions/v1/generate-protocol-pdf`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${anonKey}`,
+          'apikey': anonKey,
+        },
+        body: JSON.stringify({ protocolData: data, isArchive }),
       });
-      if (error) throw error;
-
-      // pdfData is already a Blob when Content-Type is application/pdf
-      const blob = pdfData instanceof Blob ? pdfData : new Blob([pdfData], { type: "application/pdf" });
+      if (!resp.ok) throw new Error('PDF generation failed');
+      const blob = await resp.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
