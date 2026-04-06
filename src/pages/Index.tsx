@@ -25,6 +25,7 @@ const Index = () => {
       <ForWhom />
       <WhyUs />
       <CarBrands />
+      <Gallery />
       <FAQ />
       <Contact />
       <Footer />
