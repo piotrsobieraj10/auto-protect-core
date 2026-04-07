@@ -10,13 +10,13 @@ import gallery6 from "@/assets/gallery-6.jpg";
 import gallery7 from "@/assets/gallery-7.jpg";
 
 const images = [
-  { src: gallery1, alt: "Mercedes GLE - montaż zabezpieczeń", label: "Mercedes GLE" },
-  { src: gallery2, alt: "Mercedes CLA - instalacja systemu", label: "Mercedes CLA" },
-  { src: gallery3, alt: "BMW 5 - montaż antykradzieżowy", label: "BMW Seria 5" },
-  { src: gallery4, alt: "Land Rover Sport - zabezpieczenie", label: "Land Rover Sport" },
-  { src: gallery5, alt: "Mercedes 63S AMG - ochrona pojazdu", label: "Mercedes 63S AMG" },
-  { src: gallery6, alt: "Toyota Corolla - lokalizator GPS", label: "Toyota Corolla" },
-  { src: gallery7, alt: "Ford Ranger - system alarmowy", label: "Ford Ranger" },
+  { src: gallery1, alt: "BMW M5 - montaż zabezpieczeń antykradzieżowych", label: "BMW M5" },
+  { src: gallery2, alt: "Range Rover Sport SVR - instalacja systemu", label: "Range Rover Sport SVR" },
+  { src: gallery3, alt: "BMW M4 - montaż antykradzieżowy", label: "BMW M4" },
+  { src: gallery4, alt: "Mercedes-AMG GT - ochrona pojazdu", label: "Mercedes-AMG GT" },
+  { src: gallery5, alt: "Mercedes CLE - zabezpieczenie antykradzieżowe", label: "Mercedes CLE" },
+  { src: gallery6, alt: "Mercedes GLE - montaż systemu GPS", label: "Mercedes GLE" },
+  { src: gallery7, alt: "BMW X1 - instalacja zabezpieczeń", label: "BMW X1" },
 ];
 
 const Gallery = () => {
