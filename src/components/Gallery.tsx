@@ -1,18 +1,34 @@
 import { useEffect, useCallback } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
-import gallery1 from "@/assets/gallery-1.jpg";
-import gallery3 from "@/assets/gallery-3.jpg";
-import gallery5 from "@/assets/gallery-5.jpg";
-import gallery6 from "@/assets/gallery-6.jpg";
-import gallery7 from "@/assets/gallery-7.jpg";
+import gallery1  from "@/assets/gallery-1.jpg";
+import gallery3  from "@/assets/gallery-3.jpg";
+import gallery5  from "@/assets/gallery-5.jpg";
+import gallery6  from "@/assets/gallery-6.jpg";
+import gallery7  from "@/assets/gallery-7.jpg";
+import gallery8  from "@/assets/gallery-8.jpg";
+import gallery9  from "@/assets/gallery-9.jpg";
+import gallery10 from "@/assets/gallery-10.jpg";
+import gallery11 from "@/assets/gallery-11.jpg";
+import gallery12 from "@/assets/gallery-12.jpg";
+import gallery13 from "@/assets/gallery-13.jpg";
+import gallery14 from "@/assets/gallery-14.jpg";
+import gallery15 from "@/assets/gallery-15.jpg";
 
 const images = [
-  { src: gallery1, alt: "BMW M5 - montaż zabezpieczeń antykradzieżowych",    label: "BMW M5",               pos: "center 60%"  },
-  { src: gallery3, alt: "BMW M4 - montaż antykradzieżowy",                    label: "BMW M4",               pos: "center 25%"  },
-  { src: gallery5, alt: "Mercedes CLE - zabezpieczenie antykradzieżowe",       label: "Mercedes CLE",         pos: "center 50%"  },
-  { src: gallery6, alt: "Mercedes GLE - montaż systemu GPS",                   label: "Mercedes GLE",         pos: "center 45%"  },
-  { src: gallery7, alt: "BMW X1 - instalacja zabezpieczeń",                    label: "BMW X1",               pos: "center 40%"  },
+  { src: gallery1,  alt: "BMW M5 - montaż zabezpieczeń",              label: "BMW M5",               pos: "center 60%"  },
+  { src: gallery3,  alt: "BMW M4 - montaż antykradzieżowy",            label: "BMW M4",               pos: "center 25%"  },
+  { src: gallery5,  alt: "Mercedes CLE - zabezpieczenie",              label: "Mercedes CLE",         pos: "center 50%"  },
+  { src: gallery6,  alt: "Mercedes GLE - montaż GPS",                  label: "Mercedes GLE",         pos: "center 45%"  },
+  { src: gallery7,  alt: "BMW X1 - instalacja zabezpieczeń",           label: "BMW X1",               pos: "center 40%"  },
+  { src: gallery8,  alt: "Peugeot 508 - montaż systemu GPS",           label: "Peugeot 508",          pos: "center 50%"  },
+  { src: gallery9,  alt: "Dodge Charger - montaż antykradzieżowy",     label: "Dodge Charger",        pos: "center 55%"  },
+  { src: gallery10, alt: "Wnętrze pojazdu - montaż centralki",         label: "Montaż centralki",     pos: "center 40%"  },
+  { src: gallery11, alt: "Mercedes E Coupé - instalacja systemu",      label: "Mercedes E Coupé",     pos: "center 50%"  },
+  { src: gallery12, alt: "DS7 Crossback - montaż zabezpieczeń",        label: "DS7 Crossback",        pos: "center 50%"  },
+  { src: gallery13, alt: "Audi Q5 - montaż antykradzieżowy przód",     label: "Audi Q5",              pos: "center 50%"  },
+  { src: gallery14, alt: "Audi Q5 - montaż antykradzieżowy tył",       label: "Audi Q5",              pos: "center 40%"  },
+  { src: gallery15, alt: "Instalacja elektryczna - montaż urządzenia", label: "Montaż instalacji",    pos: "center 50%"  },
 ];
 
 const Gallery = () => {
