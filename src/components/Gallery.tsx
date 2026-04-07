@@ -2,18 +2,14 @@ import { useEffect, useCallback } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import gallery1 from "@/assets/gallery-1.jpg";
-import gallery2 from "@/assets/gallery-2.jpg";
 import gallery3 from "@/assets/gallery-3.jpg";
-import gallery4 from "@/assets/gallery-4.jpg";
 import gallery5 from "@/assets/gallery-5.jpg";
 import gallery6 from "@/assets/gallery-6.jpg";
 import gallery7 from "@/assets/gallery-7.jpg";
 
 const images = [
   { src: gallery1, alt: "BMW M5 - montaż zabezpieczeń antykradzieżowych",    label: "BMW M5",               pos: "center 60%"  },
-  { src: gallery2, alt: "Range Rover Sport SVR - instalacja systemu",          label: "Range Rover Sport SVR", pos: "center 20%"  },
   { src: gallery3, alt: "BMW M4 - montaż antykradzieżowy",                    label: "BMW M4",               pos: "center 25%"  },
-  { src: gallery4, alt: "Mercedes-AMG GT - ochrona pojazdu",                   label: "Mercedes-AMG GT",      pos: "center 20%"  },
   { src: gallery5, alt: "Mercedes CLE - zabezpieczenie antykradzieżowe",       label: "Mercedes CLE",         pos: "center 50%"  },
   { src: gallery6, alt: "Mercedes GLE - montaż systemu GPS",                   label: "Mercedes GLE",         pos: "center 45%"  },
   { src: gallery7, alt: "BMW X1 - instalacja zabezpieczeń",                    label: "BMW X1",               pos: "center 40%"  },
