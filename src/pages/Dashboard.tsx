@@ -6,7 +6,6 @@ import { Label } from "@/components/ui/label";
 import { Wrench, Lock, ShieldCheck, AlertCircle } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import ProtocolStepper from "@/components/ProtocolStepper";
-import { supabase } from "@/integrations/supabase/client";
 
 const Dashboard = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -19,11 +18,13 @@ const Dashboard = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const { data: result, error } = await supabase.functions.invoke("panel-login", {
-        body: { password },
+      const res = await fetch("/api/auth/panel-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
       });
-      if (error) throw error;
-      if (result?.success) {
+      const result = await res.json();
+      if (res.ok && result?.success) {
         setIsAuthenticated(true);
         setError(false);
       } else {

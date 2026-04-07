@@ -10,7 +10,6 @@ import StepSpecification from "./protocol-steps/StepSpecification";
 import StepServiceData from "./protocol-steps/StepServiceData";
 import StepTestsAndAcceptance from "./protocol-steps/StepTestsAndAcceptance";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
 
 interface ProtocolData {
   client_name: string;
@@ -101,18 +100,12 @@ const ProtocolStepper = ({ onBack }: ProtocolStepperProps) => {
   const handleGeneratePDF = async (isArchive: boolean = false) => {
     setIsGenerating(true);
     try {
-      const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
-      const anonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
-      const resp = await fetch(`https://${projectId}.supabase.co/functions/v1/generate-protocol-pdf`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${anonKey}`,
-          'apikey': anonKey,
-        },
+      const resp = await fetch("/api/generate-protocol-pdf", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ protocolData: data, isArchive }),
       });
-      if (!resp.ok) throw new Error('PDF generation failed');
+      if (!resp.ok) throw new Error("PDF generation failed");
       const blob = await resp.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -136,10 +129,15 @@ const ProtocolStepper = ({ onBack }: ProtocolStepperProps) => {
     if (!clientEmail) { toast.error("Podaj adres e-mail klienta."); return; }
     setIsSendingClient(true);
     try {
-      const { data: result, error } = await supabase.functions.invoke("send-protocol-email", {
-        body: { ...data, clientEmail, type: "client" },
+      const res = await fetch("/api/send-client-pdf", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ protocolData: data, clientEmail }),
       });
-      if (error) throw error;
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || "Błąd wysyłki");
+      }
       toast.success(`Protokół wysłany na ${clientEmail}`);
     } catch (err: any) {
       toast.error(err.message || "Błąd wysyłki protokołu do klienta.");
@@ -151,10 +149,15 @@ const ProtocolStepper = ({ onBack }: ProtocolStepperProps) => {
   const handleArchiveAndSend = async () => {
     setIsSendingArchive(true);
     try {
-      const { data: result, error } = await supabase.functions.invoke("send-protocol-email", {
-        body: { ...data, type: "archive" },
+      const res = await fetch("/api/archive-and-send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ protocolData: data }),
       });
-      if (error) throw error;
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || "Błąd archiwizacji");
+      }
       toast.success("Archiwum wysłane do AutoSafe!");
     } catch (err: any) {
       toast.error(err.message || "Błąd archiwizacji i wysyłki.");
