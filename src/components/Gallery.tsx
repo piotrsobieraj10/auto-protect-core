@@ -10,13 +10,13 @@ import gallery6 from "@/assets/gallery-6.jpg";
 import gallery7 from "@/assets/gallery-7.jpg";
 
 const images = [
-  { src: gallery1, alt: "BMW M5 - montaż zabezpieczeń antykradzieżowych",   label: "BMW M5",              pos: "center 55%" },
-  { src: gallery2, alt: "Range Rover Sport SVR - instalacja systemu",         label: "Range Rover Sport SVR", pos: "center top"  },
-  { src: gallery3, alt: "BMW M4 - montaż antykradzieżowy",                   label: "BMW M4",              pos: "center top"  },
-  { src: gallery4, alt: "Mercedes-AMG GT - ochrona pojazdu",                  label: "Mercedes-AMG GT",     pos: "center top"  },
-  { src: gallery5, alt: "Mercedes CLE - zabezpieczenie antykradzieżowe",      label: "Mercedes CLE",        pos: "center 40%"  },
-  { src: gallery6, alt: "Mercedes GLE - montaż systemu GPS",                  label: "Mercedes GLE",        pos: "center 40%"  },
-  { src: gallery7, alt: "BMW X1 - instalacja zabezpieczeń",                   label: "BMW X1",              pos: "center 30%"  },
+  { src: gallery1, alt: "BMW M5 - montaż zabezpieczeń antykradzieżowych",    label: "BMW M5",               pos: "center 60%"  },
+  { src: gallery2, alt: "Range Rover Sport SVR - instalacja systemu",          label: "Range Rover Sport SVR", pos: "center 20%"  },
+  { src: gallery3, alt: "BMW M4 - montaż antykradzieżowy",                    label: "BMW M4",               pos: "center 25%"  },
+  { src: gallery4, alt: "Mercedes-AMG GT - ochrona pojazdu",                   label: "Mercedes-AMG GT",      pos: "center 20%"  },
+  { src: gallery5, alt: "Mercedes CLE - zabezpieczenie antykradzieżowe",       label: "Mercedes CLE",         pos: "center 50%"  },
+  { src: gallery6, alt: "Mercedes GLE - montaż systemu GPS",                   label: "Mercedes GLE",         pos: "center 45%"  },
+  { src: gallery7, alt: "BMW X1 - instalacja zabezpieczeń",                    label: "BMW X1",               pos: "center 40%"  },
 ];
 
 const Gallery = () => {
@@ -48,16 +48,16 @@ const Gallery = () => {
             <div className="flex">
               {images.map((img, i) => (
                 <div key={i} className="min-w-0 shrink-0 grow-0 basis-full">
-                  <div className="relative h-[360px] md:h-[520px]">
+                  <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
                     <img
                       src={img.src}
                       alt={img.alt}
                       loading={i === 0 ? undefined : "lazy"}
-                      className="w-full h-full object-cover"
+                      className="absolute inset-0 w-full h-full object-cover"
                       style={{ objectPosition: img.pos }}
                     />
-                    <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-background/80 to-transparent p-4 md:p-6">
-                      <span className="text-lg md:text-xl font-semibold text-foreground">
+                    <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 to-transparent p-4 md:p-6">
+                      <span className="text-lg md:text-xl font-semibold text-white">
                         {img.label}
                       </span>
                     </div>
@@ -69,14 +69,14 @@ const Gallery = () => {
 
           <button
             onClick={scrollPrev}
-            className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 bg-background/70 hover:bg-background/90 text-foreground rounded-full p-2 md:p-3 transition-colors backdrop-blur-sm"
+            className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 md:p-3 transition-colors backdrop-blur-sm"
             aria-label="Poprzednie zdjęcie"
           >
             <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
           </button>
           <button
             onClick={scrollNext}
-            className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 bg-background/70 hover:bg-background/90 text-foreground rounded-full p-2 md:p-3 transition-colors backdrop-blur-sm"
+            className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 md:p-3 transition-colors backdrop-blur-sm"
             aria-label="Następne zdjęcie"
           >
             <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
