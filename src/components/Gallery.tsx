@@ -48,14 +48,12 @@ const Gallery = () => {
             <div className="flex">
               {images.map((img, i) => (
                 <div key={i} className="min-w-0 shrink-0 grow-0 basis-full">
-                  <div className="relative aspect-video">
+                  <div className="relative h-[420px] md:h-[560px]">
                     <img
                       src={img.src}
                       alt={img.alt}
                       loading={i === 0 ? undefined : "lazy"}
-                      width={1280}
-                      height={720}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover object-center"
                     />
                     <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-background/80 to-transparent p-4 md:p-6">
                       <span className="text-lg md:text-xl font-semibold text-foreground">
