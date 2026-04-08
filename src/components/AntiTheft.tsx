@@ -1,47 +1,47 @@
-import { Shield, Lock, Cpu, AlertTriangle, Wallet, Clock, CheckCircle2 } from "lucide-react";
+import { Shield, Lock, Cpu, AlertTriangle, Wallet, Clock, CheckCircle2, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const problems = [
   {
     icon: AlertTriangle,
-    title: "Keyless i CAN – luki w fabrycznym zabezpieczeniu",
+    title: "Brak dodatkowego zabezpieczenia = większe ryzyko",
     description:
-      "Współczesne auta wyposażone w systemy keyless i magistralę CAN mogą być podatne na przejęcie bez fizycznego włamania.",
+      "Auta wyposażone w systemy keyless i magistralę CAN mogą być podatne na przejęcie bez użycia kluczy. Fabryczne zabezpieczenia często nie wystarczają.",
   },
   {
     icon: Clock,
-    title: "Kradzież bez śladów i bardzo szybko",
+    title: "Kradzież może trwać bardzo krótko",
     description:
-      "Nowoczesne metody pozwalają uruchomić pojazd w krótkim czasie, często bez uszkodzeń nadwozia czy zamków.",
+      "Nowoczesne metody pozwalają uruchomić pojazd bardzo szybko, często bez uszkodzeń nadwozia czy zamków – bez pozostawienia śladów.",
   },
   {
     icon: Wallet,
-    title: "Fabryczne zabezpieczenia to za mało",
+    title: "Utrata auta to duże koszty i stres",
     description:
-      "Producenci montują minimalne systemy ochrony. Dedykowane zabezpieczenie aftermarket to realnie inny poziom ochrony.",
+      "Ubezpieczenie nie zawsze pokrywa pełną wartość pojazdu. Czas, nerwy i formalności to dodatkowe obciążenie, którego łatwo uniknąć.",
   },
 ];
 
 const solutions = [
   {
     icon: Cpu,
-    title: "Blokada CAN",
+    title: "Blokada CAN – Radom",
     description:
       "Ochrona przed ingerencją w elektronikę pojazdu. Blokuje uruchomienie silnika nawet przy przechwyconym sygnale kluczyka.",
     label: "blokada CAN Radom",
   },
   {
     icon: Lock,
-    title: "Immobilizer dodatkowy",
+    title: "Immobilizer – Radom",
     description:
-      "Niezależne od fabrycznego zabezpieczenie uruchamiania silnika. Autoryzacja kartą, brelokiem lub PIN-em.",
+      "Dodatkowe zabezpieczenie uruchomienia auta, niezależne od fabrycznego. Autoryzacja kartą, brelokiem lub PIN-em.",
     label: "immobilizer Radom",
   },
   {
     icon: Shield,
-    title: "Lokalizator GPS",
+    title: "Montaż GPS – Radom",
     description:
-      "Ukryty tracker GPS umożliwia lokalizację pojazdu w czasie rzeczywistym i powiadomienia o nieautoryzowanym ruchu.",
+      "Monitoring i lokalizacja pojazdu. Ukryty tracker GPS z powiadomieniami o nieautoryzowanym ruchu w czasie rzeczywistym.",
     label: "montaż GPS Radom",
   },
 ];
@@ -68,12 +68,12 @@ const AntiTheft = () => {
               Dlaczego warto działać
             </span>
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
-              Nowoczesne samochody są coraz{" "}
-              <span className="text-gradient">łatwiejsze do kradzieży</span>
+              🚨 Twoje auto może być{" "}
+              <span className="text-gradient">łatwym celem</span>
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Rosnąca złożoność elektroniki samochodowej to dla złodziei nowe możliwości –
-              nie tylko zagrożenie.
+              Nowoczesne samochody wyposażone w systemy keyless i CAN mogą zostać przejęte
+              bez użycia kluczy. Fabryczne zabezpieczenia często nie wystarczają.
             </p>
           </div>
 
@@ -81,7 +81,7 @@ const AntiTheft = () => {
             {problems.map((p) => (
               <div
                 key={p.title}
-                className="p-8 rounded-xl bg-background border border-border hover:border-primary/30 transition-all duration-300"
+                className="p-8 rounded-xl bg-background border border-border hover:border-destructive/30 transition-all duration-300"
               >
                 <div className="h-13 w-13 rounded-xl bg-destructive/10 flex items-center justify-center mb-5">
                   <p.icon className="h-7 w-7 text-destructive" />
@@ -93,20 +93,11 @@ const AntiTheft = () => {
           </div>
 
           <div className="text-center">
-            <div className="flex flex-wrap justify-center gap-5 mb-8">
-              {[
-                { icon: AlertTriangle, text: "Brak dodatkowego zabezpieczenia = większe ryzyko" },
-                { icon: Clock, text: "Kradzież może trwać bardzo krótko" },
-                { icon: Wallet, text: "Utrata auta to duże straty finansowe i stres" },
-              ].map((item) => (
-                <div key={item.text} className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <item.icon className="h-4 w-4 text-destructive shrink-0" />
-                  {item.text}
-                </div>
-              ))}
-            </div>
             <Button variant="hero" size="lg" asChild>
-              <a href="tel:+48512732864">Sprawdź jak zabezpieczyć swoje auto</a>
+              <a href="tel:+48512732864" className="flex items-center gap-2">
+                <Phone className="h-5 w-5" />
+                Zabezpiecz auto – Zadzwoń teraz
+              </a>
             </Button>
           </div>
         </div>
@@ -117,15 +108,15 @@ const AntiTheft = () => {
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <span className="text-sm font-medium tracking-widest uppercase text-primary mb-3 block">
-              Rozwiązanie
+              Nasze usługi – zabezpieczenia antykradzieżowe Radom
             </span>
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
               Skuteczne zabezpieczenia{" "}
               <span className="text-gradient">dopasowane do Twojego auta</span>
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Dobór zabezpieczeń zależy od modelu auta, sposobu użytkowania i poziomu ryzyka.
-              Każdy montaż jest indywidualny – brak uniwersalnych rozwiązań.
+              Dobieramy zabezpieczenia indywidualnie do modelu auta i potrzeb klienta –
+              GPS, immobilizer i blokada CAN w Radomiu i okolicach Radomia.
             </p>
           </div>
 
@@ -152,15 +143,23 @@ const AntiTheft = () => {
                   Dlaczego warto zabezpieczyć auto?
                 </h3>
                 <p className="text-muted-foreground leading-relaxed mb-6">
-                  Każde auto jest inne – dlatego przed montażem dokładnie analizuję model
-                  pojazdu, jego elektronikę i potrzeby klienta. Dobór zabezpieczenia zawsze
-                  odbywa się indywidualnie, bez gotowych szablonów.
+                  Działamy na terenie Radomia i całego województwa mazowieckiego.
+                  Możliwy dojazd do klienta oraz realizacje na terenie całej Polski po uzgodnieniu.
+                  Każda instalacja jest indywidualnie dobrana – bez gotowych szablonów.
                 </p>
-                <Button variant="hero" size="lg" asChild>
-                  <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
-                    Zapytaj o najlepsze zabezpieczenie dla Twojego auta
-                  </a>
-                </Button>
+                <div className="flex flex-wrap gap-3">
+                  <Button variant="hero" size="lg" asChild>
+                    <a href="tel:+48512732864">
+                      <Phone className="h-4 w-4 mr-2" />
+                      Zadzwoń teraz
+                    </a>
+                  </Button>
+                  <Button variant="heroOutline" size="lg" asChild>
+                    <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
+                      Napisz na WhatsApp
+                    </a>
+                  </Button>
+                </div>
               </div>
               <div className="space-y-3">
                 {benefits.map((benefit) => (

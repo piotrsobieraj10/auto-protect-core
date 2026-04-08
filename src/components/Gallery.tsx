@@ -1,6 +1,7 @@
 import { useEffect, useCallback } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Phone } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
+import { Button } from "@/components/ui/button";
 import gallery1  from "@/assets/gallery-1.jpg";
 import gallery3  from "@/assets/gallery-3.jpg";
 import gallery5  from "@/assets/gallery-5.jpg";
@@ -16,19 +17,19 @@ import gallery14 from "@/assets/gallery-14.jpg";
 import gallery15 from "@/assets/gallery-15.jpg";
 
 const images = [
-  { src: gallery1,  alt: "BMW M5 – montaż immobilizera",              label: "BMW M5",              tag: "Montaż immobilizera",           pos: "center 60%"  },
-  { src: gallery3,  alt: "BMW M4 – ukryty lokalizator GPS",            label: "BMW M4",              tag: "Ukryty lokalizator GPS",         pos: "center 25%"  },
-  { src: gallery5,  alt: "Mercedes CLE – blokada CAN",                 label: "Mercedes CLE",        tag: "Blokada CAN",                    pos: "center 50%"  },
-  { src: gallery6,  alt: "Mercedes GLE – montaż GPS",                  label: "Mercedes GLE",        tag: "Montaż GPS",                     pos: "center 45%"  },
-  { src: gallery7,  alt: "BMW X1 – immobilizer dodatkowy",             label: "BMW X1",              tag: "Immobilizer dodatkowy",          pos: "center 40%"  },
-  { src: gallery8,  alt: "Peugeot 508 – montaż lokalizatora GPS",      label: "Peugeot 508",         tag: "Montaż lokalizatora GPS",        pos: "center 50%"  },
-  { src: gallery9,  alt: "Dodge Charger – zabezpieczenia CAN",         label: "Dodge Charger",       tag: "Zabezpieczenia CAN",             pos: "center 55%"  },
-  { src: gallery10, alt: "Wnętrze pojazdu – montaż centralki",         label: "Wnętrze pojazdu",     tag: "Montaż centralki systemu",       pos: "center 40%"  },
-  { src: gallery11, alt: "Mercedes E Coupé – immobilizer + GPS",       label: "Mercedes E Coupé",    tag: "Immobilizer + GPS",              pos: "center 50%"  },
-  { src: gallery12, alt: "DS7 Crossback – montaż zabezpieczeń",        label: "DS7 Crossback",       tag: "Blokada CAN + immobilizer",      pos: "center 50%"  },
-  { src: gallery13, alt: "Audi Q5 – montaż GPS i immobilizera",        label: "Audi Q5",             tag: "GPS + immobilizer",              pos: "center 50%"  },
-  { src: gallery14, alt: "Audi Q5 – widok po montażu zabezpieczeń",   label: "Audi Q5",             tag: "Montaż zabezpieczeń",            pos: "center 40%"  },
-  { src: gallery15, alt: "Instalacja elektryczna – montaż systemu",    label: "Instalacja systemu",  tag: "Montaż instalacji elektrycznej", pos: "center 50%"  },
+  { src: gallery1,  alt: "Montaż immobilizera – BMW M5 – Radom",              label: "BMW M5",             tag: "Montaż immobilizera – Radom",           pos: "center 60%"  },
+  { src: gallery3,  alt: "Ukryty lokalizator GPS – BMW M4 – Radom",            label: "BMW M4",             tag: "Ukryty GPS – Radom",                    pos: "center 25%"  },
+  { src: gallery5,  alt: "Blokada CAN – Mercedes CLE – Radom",                 label: "Mercedes CLE",       tag: "Blokada CAN – Radom",                   pos: "center 50%"  },
+  { src: gallery6,  alt: "Montaż GPS – Mercedes GLE – Radom",                  label: "Mercedes GLE",       tag: "Montaż GPS – Radom",                    pos: "center 45%"  },
+  { src: gallery7,  alt: "Immobilizer dodatkowy – BMW X1 – Radom",             label: "BMW X1",             tag: "Immobilizer dodatkowy – Radom",         pos: "center 40%"  },
+  { src: gallery8,  alt: "Montaż lokalizatora GPS – Peugeot 508 – Radom",      label: "Peugeot 508",        tag: "Montaż lokalizatora GPS – Radom",       pos: "center 50%"  },
+  { src: gallery9,  alt: "Zabezpieczenia CAN – Dodge Charger – Radom",         label: "Dodge Charger",      tag: "Zabezpieczenia CAN – Radom",            pos: "center 55%"  },
+  { src: gallery10, alt: "Montaż centralki systemu – wnętrze pojazdu – Radom", label: "Wnętrze pojazdu",    tag: "Montaż centralki systemu – Radom",      pos: "center 40%"  },
+  { src: gallery11, alt: "Immobilizer i GPS – Mercedes E Coupé – Radom",       label: "Mercedes E Coupé",   tag: "Immobilizer + GPS – Radom",             pos: "center 50%"  },
+  { src: gallery12, alt: "Blokada CAN i immobilizer – DS7 Crossback – Radom",  label: "DS7 Crossback",      tag: "Blokada CAN + immobilizer – Radom",     pos: "center 50%"  },
+  { src: gallery13, alt: "Montaż GPS i immobilizera – Audi Q5 – Radom",        label: "Audi Q5",            tag: "GPS + immobilizer – Radom",             pos: "center 50%"  },
+  { src: gallery14, alt: "Zabezpieczenia antykradzieżowe – Audi Q5 – Radom",   label: "Audi Q5",            tag: "Montaż zabezpieczeń – Radom",           pos: "center 40%"  },
+  { src: gallery15, alt: "Montaż instalacji elektrycznej – Radom",             label: "Instalacja systemu", tag: "Montaż instalacji – Radom",             pos: "center 50%"  },
 ];
 
 const Gallery = () => {
@@ -48,17 +49,18 @@ const Gallery = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <span className="text-sm font-medium tracking-widest uppercase text-primary mb-3 block">
-            Portfolio
+            Portfolio – zabezpieczenia antykradzieżowe Radom
           </span>
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
             Realne <span className="text-gradient">realizacje</span>
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Prawdziwe zdjęcia z wykonanych montaży – każde z opisem pojazdu i zastosowanego zabezpieczenia.
+            Prawdziwe zdjęcia z wykonanych montaży w Radomiu i okolicach – każde z opisem pojazdu
+            i zastosowanego zabezpieczenia.
           </p>
         </div>
 
-        <div className="relative">
+        <div className="relative mb-10">
           <div className="overflow-hidden rounded-xl" ref={emblaRef}>
             <div className="flex">
               {images.map((img, i) => (
@@ -101,10 +103,15 @@ const Gallery = () => {
           >
             <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
           </button>
+        </div>
 
-          <div className="text-center mt-3 text-xs text-muted-foreground">
-            {images.length} realizacji · karuzela autoprzewijająca
-          </div>
+        <div className="text-center">
+          <Button variant="hero" size="lg" asChild>
+            <a href="tel:+48512732864" className="flex items-center gap-2">
+              <Phone className="h-5 w-5" />
+              Zadzwoń teraz
+            </a>
+          </Button>
         </div>
       </div>
     </section>
