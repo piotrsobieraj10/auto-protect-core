@@ -16,19 +16,19 @@ import gallery14 from "@/assets/gallery-14.jpg";
 import gallery15 from "@/assets/gallery-15.jpg";
 
 const images = [
-  { src: gallery1,  alt: "BMW M5 - montaż zabezpieczeń",              label: "BMW M5",               pos: "center 60%"  },
-  { src: gallery3,  alt: "BMW M4 - montaż antykradzieżowy",            label: "BMW M4",               pos: "center 25%"  },
-  { src: gallery5,  alt: "Mercedes CLE - zabezpieczenie",              label: "Mercedes CLE",         pos: "center 50%"  },
-  { src: gallery6,  alt: "Mercedes GLE - montaż GPS",                  label: "Mercedes GLE",         pos: "center 45%"  },
-  { src: gallery7,  alt: "BMW X1 - instalacja zabezpieczeń",           label: "BMW X1",               pos: "center 40%"  },
-  { src: gallery8,  alt: "Peugeot 508 - montaż systemu GPS",           label: "Peugeot 508",          pos: "center 50%"  },
-  { src: gallery9,  alt: "Dodge Charger - montaż antykradzieżowy",     label: "Dodge Charger",        pos: "center 55%"  },
-  { src: gallery10, alt: "Wnętrze pojazdu - montaż centralki",         label: "Montaż centralki",     pos: "center 40%"  },
-  { src: gallery11, alt: "Mercedes E Coupé - instalacja systemu",      label: "Mercedes E Coupé",     pos: "center 50%"  },
-  { src: gallery12, alt: "DS7 Crossback - montaż zabezpieczeń",        label: "DS7 Crossback",        pos: "center 50%"  },
-  { src: gallery13, alt: "Audi Q5 - montaż antykradzieżowy przód",     label: "Audi Q5",              pos: "center 50%"  },
-  { src: gallery14, alt: "Audi Q5 - montaż antykradzieżowy tył",       label: "Audi Q5",              pos: "center 40%"  },
-  { src: gallery15, alt: "Instalacja elektryczna - montaż urządzenia", label: "Montaż instalacji",    pos: "center 50%"  },
+  { src: gallery1,  alt: "BMW M5 – montaż immobilizera",              label: "BMW M5",              tag: "Montaż immobilizera",           pos: "center 60%"  },
+  { src: gallery3,  alt: "BMW M4 – ukryty lokalizator GPS",            label: "BMW M4",              tag: "Ukryty lokalizator GPS",         pos: "center 25%"  },
+  { src: gallery5,  alt: "Mercedes CLE – blokada CAN",                 label: "Mercedes CLE",        tag: "Blokada CAN",                    pos: "center 50%"  },
+  { src: gallery6,  alt: "Mercedes GLE – montaż GPS",                  label: "Mercedes GLE",        tag: "Montaż GPS",                     pos: "center 45%"  },
+  { src: gallery7,  alt: "BMW X1 – immobilizer dodatkowy",             label: "BMW X1",              tag: "Immobilizer dodatkowy",          pos: "center 40%"  },
+  { src: gallery8,  alt: "Peugeot 508 – montaż lokalizatora GPS",      label: "Peugeot 508",         tag: "Montaż lokalizatora GPS",        pos: "center 50%"  },
+  { src: gallery9,  alt: "Dodge Charger – zabezpieczenia CAN",         label: "Dodge Charger",       tag: "Zabezpieczenia CAN",             pos: "center 55%"  },
+  { src: gallery10, alt: "Wnętrze pojazdu – montaż centralki",         label: "Wnętrze pojazdu",     tag: "Montaż centralki systemu",       pos: "center 40%"  },
+  { src: gallery11, alt: "Mercedes E Coupé – immobilizer + GPS",       label: "Mercedes E Coupé",    tag: "Immobilizer + GPS",              pos: "center 50%"  },
+  { src: gallery12, alt: "DS7 Crossback – montaż zabezpieczeń",        label: "DS7 Crossback",       tag: "Blokada CAN + immobilizer",      pos: "center 50%"  },
+  { src: gallery13, alt: "Audi Q5 – montaż GPS i immobilizera",        label: "Audi Q5",             tag: "GPS + immobilizer",              pos: "center 50%"  },
+  { src: gallery14, alt: "Audi Q5 – widok po montażu zabezpieczeń",   label: "Audi Q5",             tag: "Montaż zabezpieczeń",            pos: "center 40%"  },
+  { src: gallery15, alt: "Instalacja elektryczna – montaż systemu",    label: "Instalacja systemu",  tag: "Montaż instalacji elektrycznej", pos: "center 50%"  },
 ];
 
 const Gallery = () => {
@@ -36,7 +36,7 @@ const Gallery = () => {
 
   useEffect(() => {
     if (!emblaApi) return;
-    const interval = setInterval(() => emblaApi.scrollNext(), 4000);
+    const interval = setInterval(() => emblaApi.scrollNext(), 4500);
     return () => clearInterval(interval);
   }, [emblaApi]);
 
@@ -47,11 +47,14 @@ const Gallery = () => {
     <section id="galeria" className="py-16 md:py-24 bg-secondary/30">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
+          <span className="text-sm font-medium tracking-widest uppercase text-primary mb-3 block">
+            Portfolio
+          </span>
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Nasze <span className="text-primary">realizacje</span>
+            Realne <span className="text-gradient">realizacje</span>
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Zobacz pojazdy, które zabezpieczyliśmy profesjonalnymi systemami antykradzieżowymi.
+            Prawdziwe zdjęcia z wykonanych montaży – każde z opisem pojazdu i zastosowanego zabezpieczenia.
           </p>
         </div>
 
@@ -68,10 +71,15 @@ const Gallery = () => {
                       className="absolute inset-0 w-full h-full object-cover"
                       style={{ objectPosition: img.pos }}
                     />
-                    <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 to-transparent p-4 md:p-6">
-                      <span className="text-lg md:text-xl font-semibold text-white">
-                        {img.label}
-                      </span>
+                    <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/75 to-transparent p-4 md:p-6">
+                      <div className="flex flex-col gap-1">
+                        <span className="inline-block px-2 py-0.5 rounded bg-primary/80 text-primary-foreground text-xs font-medium w-fit">
+                          {img.tag}
+                        </span>
+                        <span className="text-lg md:text-xl font-semibold text-white">
+                          {img.label}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -93,6 +101,10 @@ const Gallery = () => {
           >
             <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
           </button>
+
+          <div className="text-center mt-3 text-xs text-muted-foreground">
+            {images.length} realizacji · karuzela autoprzewijająca
+          </div>
         </div>
       </div>
     </section>
