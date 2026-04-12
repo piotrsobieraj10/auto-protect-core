@@ -89,7 +89,7 @@ const Pricing = () => {
                 >
                   <a href={whatsappMontazUrl} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2">
                     <Wrench className="h-4 w-4" />
-                    Umów montaż
+                    Zapytaj o montaż
                   </a>
                 </Button>
               </div>
