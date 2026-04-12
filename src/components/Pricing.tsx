@@ -1,4 +1,4 @@
-import { Lock, Locate, Shield, Phone, MessageCircle } from "lucide-react";
+import { Lock, Locate, Shield, Phone, MessageCircle, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const services = [
@@ -7,7 +7,7 @@ const services = [
     name: "🔐 Zabezpieczenie antykradzieżowe",
     description:
       "Nowoczesne zabezpieczenie, które skutecznie blokuje możliwość uruchomienia pojazdu bez autoryzacji kierowcy. Nawet po dostaniu się do auta – nie da się go uruchomić.",
-    price: "od 2499 zł",
+    price: "od 2499 zł netto",
     highlight: false,
   },
   {
@@ -16,7 +16,7 @@ const services = [
     badge: "Najczęściej wybierany",
     description:
       "Połączenie zabezpieczenia antykradzieżowego i GPS dla maksymalnej ochrony pojazdu.",
-    price: "od 3199 zł",
+    price: "od 3199 zł netto",
     highlight: true,
   },
   {
@@ -24,13 +24,14 @@ const services = [
     name: "📡 Lokalizator GPS",
     description:
       "Monitoring i lokalizacja pojazdu w czasie rzeczywistym. Stały dostęp do pozycji auta z poziomu telefonu.",
-    price: "od 900 zł",
+    price: "od 900 zł netto",
     highlight: false,
   },
 ];
 
 const Pricing = () => {
   const whatsappUrl = "https://wa.me/48512732864?text=Chc%C4%99%20zapyta%C4%87%20o%20cen%C4%99%20zabezpiecze%C5%84";
+  const whatsappMontazUrl = "https://wa.me/48512732864?text=Chc%C4%99%20um%C3%B3wi%C4%87%20monta%C5%BC%20zabezpieczenia";
 
   return (
     <section id="cennik" className="py-24 bg-card">
@@ -43,6 +44,9 @@ const Pricing = () => {
             💰 Zabezpieczenia antykradzieżowe –{" "}
             <span className="text-gradient">ceny</span>
           </h2>
+          <p className="text-muted-foreground text-base max-w-xl mx-auto mt-4">
+            Oferujemy sprawdzone zabezpieczenia dopasowane indywidualnie do pojazdu i poziomu ochrony.
+          </p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-6 mb-10">
@@ -77,21 +81,38 @@ const Pricing = () => {
                 <div className={`font-bold text-primary mb-4 ${s.highlight ? "text-4xl" : "text-3xl"}`}>
                   {s.price}
                 </div>
-                <Button
-                  variant="hero"
-                  size={s.highlight ? "lg" : "sm"}
-                  className="w-full"
-                  asChild
-                >
-                  <a href="tel:+48512732864" className="flex items-center justify-center gap-2">
-                    <Phone className="h-4 w-4" />
-                    Zadzwoń teraz
-                  </a>
-                </Button>
+                <div className="flex flex-col gap-2">
+                  <Button
+                    variant="hero"
+                    size={s.highlight ? "lg" : "sm"}
+                    className="w-full"
+                    asChild
+                  >
+                    <a href={whatsappMontazUrl} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2">
+                      <Wrench className="h-4 w-4" />
+                      Umów montaż
+                    </a>
+                  </Button>
+                  <Button
+                    variant="heroOutline"
+                    size="sm"
+                    className="w-full"
+                    asChild
+                  >
+                    <a href="tel:+48512732864" className="flex items-center justify-center gap-2">
+                      <Phone className="h-4 w-4" />
+                      Zapytaj o montaż
+                    </a>
+                  </Button>
+                </div>
               </div>
             </div>
           ))}
         </div>
+
+        <p className="text-center text-muted-foreground text-sm mb-10">
+          Wszystkie ceny podane są w kwotach netto. Do usług doliczany jest podatek VAT.
+        </p>
 
         <div className="max-w-2xl mx-auto text-center space-y-6">
           <p className="text-muted-foreground text-sm">
