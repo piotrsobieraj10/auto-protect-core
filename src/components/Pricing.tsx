@@ -1,4 +1,4 @@
-import { Lock, Locate, Shield, Phone, MessageCircle, Wrench } from "lucide-react";
+import { Lock, Locate, Shield, Phone, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const services = [
@@ -31,7 +31,6 @@ const services = [
 
 const Pricing = () => {
   const whatsappUrl = "https://wa.me/48512732864?text=Chc%C4%99%20zapyta%C4%87%20o%20cen%C4%99%20zabezpiecze%C5%84";
-  const whatsappMontazUrl = "https://wa.me/48512732864?text=Chc%C4%99%20um%C3%B3wi%C4%87%20monta%C5%BC%20zabezpieczenia";
 
   return (
     <section id="cennik" className="py-24 bg-card">
@@ -87,8 +86,8 @@ const Pricing = () => {
                   className="w-full"
                   asChild
                 >
-                  <a href={whatsappMontazUrl} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2">
-                    <Wrench className="h-4 w-4" />
+                  <a href="tel:+48512732864" className="flex items-center justify-center gap-2">
+                    <Phone className="h-4 w-4" />
                     Zapytaj o montaż
                   </a>
                 </Button>
