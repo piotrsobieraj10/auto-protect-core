@@ -81,30 +81,17 @@ const Pricing = () => {
                 <div className={`font-bold text-primary mb-4 ${s.highlight ? "text-4xl" : "text-3xl"}`}>
                   {s.price}
                 </div>
-                <div className="flex flex-col gap-2">
-                  <Button
-                    variant="hero"
-                    size={s.highlight ? "lg" : "sm"}
-                    className="w-full"
-                    asChild
-                  >
-                    <a href={whatsappMontazUrl} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2">
-                      <Wrench className="h-4 w-4" />
-                      Umów montaż
-                    </a>
-                  </Button>
-                  <Button
-                    variant="heroOutline"
-                    size="sm"
-                    className="w-full"
-                    asChild
-                  >
-                    <a href="tel:+48512732864" className="flex items-center justify-center gap-2">
-                      <Phone className="h-4 w-4" />
-                      Zapytaj o montaż
-                    </a>
-                  </Button>
-                </div>
+                <Button
+                  variant="hero"
+                  size={s.highlight ? "lg" : "sm"}
+                  className="w-full"
+                  asChild
+                >
+                  <a href={whatsappMontazUrl} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2">
+                    <Wrench className="h-4 w-4" />
+                    Umów montaż
+                  </a>
+                </Button>
               </div>
             </div>
           ))}
