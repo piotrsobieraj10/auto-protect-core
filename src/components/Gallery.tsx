@@ -15,6 +15,7 @@ import gallery12 from "@/assets/gallery-12.jpg";
 import gallery13 from "@/assets/gallery-13.jpg";
 import gallery14 from "@/assets/gallery-14.jpg";
 import gallery15 from "@/assets/gallery-15.jpg";
+import gallery16 from "@/assets/gallery-16.jpg";
 
 const images = [
   { src: gallery1,  alt: "Montaż immobilizera – BMW M5 – Radom",              label: "BMW M5",             tag: "Montaż immobilizera – Radom",           pos: "center 60%"  },
@@ -30,6 +31,7 @@ const images = [
   { src: gallery13, alt: "Montaż GPS i immobilizera – Audi Q5 – Radom",        label: "Audi Q5",            tag: "GPS + immobilizer – Radom",             pos: "center 50%"  },
   { src: gallery14, alt: "Zabezpieczenia antykradzieżowe – Audi Q5 – Radom",   label: "Audi Q5",            tag: "Montaż zabezpieczeń – Radom",           pos: "center 40%"  },
   { src: gallery15, alt: "Montaż instalacji elektrycznej – Radom",             label: "Instalacja systemu", tag: "Montaż instalacji – Radom",             pos: "center 50%"  },
+  { src: gallery16, alt: "Montaż zabezpieczenia – Mercedes AMG – Radom",       label: "Mercedes AMG",       tag: "Montaż zabezpieczenia – Radom",         pos: "center 40%"  },
 ];
 
 const Gallery = () => {
