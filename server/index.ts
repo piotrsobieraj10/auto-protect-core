@@ -455,31 +455,33 @@ app.post("/api/archive-and-send", async (req, res) => {
 // ── Contact email ─────────────────────────────────────────────────────────────
 app.post("/api/send-contact-email", async (req, res) => {
   try {
-    const { name, phone, message } = req.body;
+    const { name, phone, vehicle, message } = req.body;
     if (!name || !phone) return res.status(400).json({ error: "Imie i telefon sa wymagane" });
-    const RESEND_API_KEY = process.env.RESEND_API_KEY;
-    if (!RESEND_API_KEY) return res.status(500).json({ error: "Serwer e-mail nie jest skonfigurowany" });
+    if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+      return res.status(500).json({ error: "SMTP nie jest skonfigurowany (brak SMTP_USER lub SMTP_PASS)." });
+    }
     const emailHtml = `
-      <h2>Nowe zapytanie z formularza kontaktowego</h2>
-      <p><strong>Imie i nazwisko:</strong> ${name}</p>
-      <p><strong>Telefon:</strong> ${phone}</p>
-      <p><strong>Wiadomosc:</strong> ${message || "Brak wiadomosci"}</p>
+      <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto">
+        <h2 style="color:#1a1a1a">AutoSafe — Nowe zapytanie z formularza</h2>
+        <table style="width:100%;border-collapse:collapse">
+          <tr><td style="padding:8px;border-bottom:1px solid #eee;font-weight:bold;width:40%">Imię i nazwisko:</td><td style="padding:8px;border-bottom:1px solid #eee">${name}</td></tr>
+          <tr><td style="padding:8px;border-bottom:1px solid #eee;font-weight:bold">Telefon:</td><td style="padding:8px;border-bottom:1px solid #eee">${phone}</td></tr>
+          ${vehicle ? `<tr><td style="padding:8px;border-bottom:1px solid #eee;font-weight:bold">Pojazd:</td><td style="padding:8px;border-bottom:1px solid #eee">${vehicle}</td></tr>` : ""}
+          ${message ? `<tr><td style="padding:8px;border-bottom:1px solid #eee;font-weight:bold">Wiadomość:</td><td style="padding:8px;border-bottom:1px solid #eee">${message}</td></tr>` : ""}
+        </table>
+      </div>
     `;
-    const apiRes = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${RESEND_API_KEY}` },
-      body: JSON.stringify({
-        from: "AutoSafe <onboarding@resend.dev>",
-        to: ["piotrsobieraj10@gmail.com"],
-        subject: `Zapytanie od ${name}`,
-        html: emailHtml,
-      }),
+    const transporter = createTransporter();
+    await transporter.sendMail({
+      from: `AutoSafe <${process.env.SMTP_USER}>`,
+      to: "autosafe@o2.pl",
+      subject: `Zapytanie od ${name}${vehicle ? ` – ${vehicle}` : ""}`,
+      html: emailHtml,
     });
-    if (!apiRes.ok) return res.status(500).json({ error: "Nie udalo sie wyslac e-maila" });
     res.json({ success: true });
-  } catch (err) {
+  } catch (err: any) {
     console.error("Contact email error:", err);
-    res.status(500).json({ error: "Wystapil blad serwera" });
+    res.status(500).json({ error: err.message || "Wystapil blad serwera" });
   }
 });
 
