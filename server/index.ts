@@ -480,8 +480,10 @@ app.post("/api/send-contact-email", async (req, res) => {
         html: emailHtml,
       }),
     });
-    if (!apiRes.ok) return res.status(500).json({ error: "Nie udalo sie wyslac e-maila" });
-    res.json({ success: true });
+    const resendBody = await apiRes.json().catch(() => ({}));
+    console.log("[Resend] status:", apiRes.status, "body:", JSON.stringify(resendBody));
+    if (!apiRes.ok) return res.status(500).json({ error: "Nie udalo sie wyslac e-maila", detail: resendBody });
+    res.json({ success: true, id: resendBody.id });
   } catch (err: any) {
     console.error("Contact email error:", err);
     res.status(500).json({ error: err.message || "Wystapil blad serwera" });
