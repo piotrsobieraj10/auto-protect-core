@@ -7,7 +7,7 @@
     "dev": "vite",
     "dev:client": "vite",
     "dev:server": "tsx server/index.ts",
-    "build": "vite build",
+    "build": "vite build --outDir dist/public && esbuild server/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js --packages=external && cp server/logo.png dist/logo.png && node scripts/create-cjs-wrapper.js",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",

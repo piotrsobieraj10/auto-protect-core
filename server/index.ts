@@ -502,6 +502,15 @@ app.post("/api/auth/panel-login", (req, res) => {
   }
 });
 
+// ── Static frontend (produkcja) ───────────────────────────────────────────────
+if (process.env.NODE_ENV === "production") {
+  const staticDir = path.join(__dirname, "public");
+  app.use(express.static(staticDir));
+  app.use((_req, res) => {
+    res.sendFile(path.join(staticDir, "index.html"));
+  });
+}
+
 const PORT = parseInt(process.env.PORT || "3001");
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`API server running on port ${PORT}`);
