@@ -12,19 +12,23 @@ import FinalCTA from "@/components/FinalCTA";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import FloatingContact from "@/components/FloatingContact";
+import CTABanner from "@/components/CTABanner";
 
 const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
       <Hero />
+      <CTABanner buttonText="Dobierz zabezpieczenie do auta" />
       <AntiTheft />
       <HowItWorks />
       <Services />
       <Pricing />
+      <CTABanner buttonText="Zapytaj o zabezpieczenie" variant="heroOutline" />
       <WhyUs />
       <CarBrands />
       <Gallery />
+      <CTABanner buttonText="Zadzwoń teraz" />
       <FAQ />
       <FinalCTA />
       <Contact />
