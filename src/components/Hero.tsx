@@ -1,6 +1,7 @@
 import heroBg from "@/assets/hero-bg.jpg";
 import { Button } from "@/components/ui/button";
-import { Shield, MapPin, Phone, MessageCircle, CheckCircle2, Timer } from "lucide-react";
+import { Shield, MapPin, MessageCircle, CheckCircle2, Timer } from "lucide-react";
+import PhoneButton from "@/components/PhoneButton";
 
 const Hero = () => {
   const whatsappUrl = "https://wa.me/48512732864?text=Chc%C4%99%20zabezpieczy%C4%87%20swoje%20auto";
@@ -52,12 +53,7 @@ const Hero = () => {
           </div>
 
           <div className="flex flex-wrap gap-4 mb-8">
-            <Button variant="hero" size="lg" asChild>
-              <a href="tel:+48512732864" className="flex items-center gap-2 text-base px-8 py-4">
-                <Phone className="h-5 w-5" />
-                Zadzwoń teraz
-              </a>
-            </Button>
+            <PhoneButton text="Zadzwoń teraz" size="lg" showNumber />
             <Button variant="heroOutline" size="lg" asChild>
               <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-base px-8 py-4">
                 <MessageCircle className="h-5 w-5" />

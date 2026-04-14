@@ -1,5 +1,6 @@
-import { Shield, Locate, Truck, Check, Phone } from "lucide-react";
+import { Shield, Locate, Truck, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import PhoneButton from "@/components/PhoneButton";
 
 const packages = [
   {
@@ -94,13 +95,8 @@ const Services = () => {
           ))}
         </div>
 
-        <div className="text-center">
-          <Button variant="hero" size="lg" asChild>
-            <a href="tel:+48512732864" className="flex items-center gap-2">
-              <Phone className="h-5 w-5" />
-              Zadzwoń i zapytaj o pakiet
-            </a>
-          </Button>
+        <div className="flex justify-center">
+          <PhoneButton text="Zadzwoń i zapytaj o pakiet" size="lg" showNumber />
         </div>
       </div>
     </section>

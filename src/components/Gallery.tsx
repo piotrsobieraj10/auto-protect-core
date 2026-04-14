@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { Phone, Shield } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Shield } from "lucide-react";
+import PhoneButton from "@/components/PhoneButton";
 import gallery1  from "@/assets/gallery-1.jpg";
 import gallery3  from "@/assets/gallery-3.jpg";
 import gallery5  from "@/assets/gallery-5.jpg";
@@ -106,13 +106,8 @@ const Gallery = () => {
           ))}
         </div>
 
-        <div className="text-center space-y-3">
-          <Button variant="hero" size="lg" asChild>
-            <a href="tel:+48512732864" className="flex items-center gap-2">
-              <Phone className="h-5 w-5" />
-              Zabezpiecz swój samochód
-            </a>
-          </Button>
+        <div className="flex flex-col items-center gap-3">
+          <PhoneButton text="Zabezpiecz swój samochód" size="lg" showNumber />
           <p className="text-sm text-muted-foreground">
             Skontaktuj się i dobierzemy najlepsze zabezpieczenie do Twojego auta
           </p>
