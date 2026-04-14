@@ -21,7 +21,7 @@ const Navbar = () => {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
       <div className="container mx-auto px-6 h-16 flex items-center justify-between">
         <a href="/" className="flex items-center gap-2">
-          <img src="/logo.png" alt="AutoSafe logo" className="h-20 w-20 invert" />
+          <img src="/logo.png" alt="AutoSafe logo" className="h-9 w-9 object-contain invert" />
           <span className="text-lg font-bold">AutoSafe</span>
         </a>
 
