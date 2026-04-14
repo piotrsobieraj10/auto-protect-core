@@ -50,14 +50,11 @@ const Gallery = () => {
     <section id="galeria" className="py-16 md:py-24 bg-secondary/30">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <span className="text-sm font-medium tracking-widest uppercase text-primary mb-3 block">
-            Galeria
-          </span>
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
             Nasze <span className="text-gradient">realizacje</span>
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Zobacz, jak skutecznie zabezpieczamy samochody przed kradzieżą – sprawdzone rozwiązania, które naprawdę działają.
+            Zobacz, jak zabezpieczamy auta przed kradzieżą w Radomiu i okolicach.
           </p>
         </div>
 
@@ -75,8 +72,11 @@ const Gallery = () => {
                       style={{ objectPosition: img.pos }}
                     />
                     <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/75 to-transparent p-4 md:p-6">
-                      <span className="text-lg md:text-xl font-semibold text-white">
+                      <span className="text-lg md:text-xl font-semibold text-white block">
                         {img.label}
+                      </span>
+                      <span className="text-xs text-white/70">
+                        Montaż zabezpieczenia antykradzieżowego – Radom
                       </span>
                     </div>
                   </div>
