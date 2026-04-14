@@ -457,9 +457,8 @@ app.post("/api/send-contact-email", async (req, res) => {
   try {
     const { name, phone, vehicle, message } = req.body;
     if (!name || !phone) return res.status(400).json({ error: "Imie i telefon sa wymagane" });
-    if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
-      return res.status(500).json({ error: "SMTP nie jest skonfigurowany (brak SMTP_USER lub SMTP_PASS)." });
-    }
+    const RESEND_API_KEY = process.env.RESEND_API_KEY;
+    if (!RESEND_API_KEY) return res.status(500).json({ error: "Serwer e-mail nie jest skonfigurowany" });
     const emailHtml = `
       <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto">
         <h2 style="color:#1a1a1a">AutoSafe — Nowe zapytanie z formularza</h2>
@@ -471,13 +470,17 @@ app.post("/api/send-contact-email", async (req, res) => {
         </table>
       </div>
     `;
-    const transporter = createTransporter();
-    await transporter.sendMail({
-      from: `AutoSafe <${process.env.SMTP_USER}>`,
-      to: "autosafe@o2.pl",
-      subject: `Zapytanie od ${name}${vehicle ? ` – ${vehicle}` : ""}`,
-      html: emailHtml,
+    const apiRes = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${RESEND_API_KEY}` },
+      body: JSON.stringify({
+        from: "AutoSafe <onboarding@resend.dev>",
+        to: ["piotrsobieraj10@gmail.com"],
+        subject: `Zapytanie od ${name}${vehicle ? ` – ${vehicle}` : ""}`,
+        html: emailHtml,
+      }),
     });
+    if (!apiRes.ok) return res.status(500).json({ error: "Nie udalo sie wyslac e-maila" });
     res.json({ success: true });
   } catch (err: any) {
     console.error("Contact email error:", err);
