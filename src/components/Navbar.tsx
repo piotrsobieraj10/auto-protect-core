@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
-import ASLogo from "@/components/ASLogo";
 
 const navLinks = [
   { href: "#zabezpieczenia", label: "Zabezpieczenia" },
@@ -22,11 +21,13 @@ const Navbar = () => {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
       <div className="container mx-auto px-6 h-16 flex items-center justify-between">
         <a href="/" className="flex items-center gap-3 group">
-          <ASLogo
+          <img
+            src="/logo.png"
+            alt="AutoSafe logo"
             className="
-              w-11 h-11 flex-shrink-0
+              h-11 w-11 object-contain invert flex-shrink-0
               drop-shadow-[0_0_6px_rgba(147,197,253,0.35)]
-              group-hover:drop-shadow-[0_0_12px_rgba(147,197,253,0.65)]
+              group-hover:drop-shadow-[0_0_14px_rgba(147,197,253,0.65)]
               transition-all duration-300
             "
           />
