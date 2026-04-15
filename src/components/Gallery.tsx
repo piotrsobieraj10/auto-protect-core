@@ -8,7 +8,6 @@ import gallery6  from "@/assets/gallery-6.jpg";
 import gallery7  from "@/assets/gallery-7.jpg";
 import gallery8  from "@/assets/gallery-8.jpg";
 import gallery9  from "@/assets/gallery-9.jpg";
-import gallery10 from "@/assets/gallery-10.jpg";
 import gallery11 from "@/assets/gallery-11.jpg";
 import gallery12 from "@/assets/gallery-12.jpg";
 import gallery13 from "@/assets/gallery-13.jpg";
@@ -24,7 +23,6 @@ const images = [
   { src: gallery7,  alt: "BMW X1",           label: "BMW X1",           pos: "center 40%" },
   { src: gallery8,  alt: "Peugeot 508",      label: "Peugeot 508",      pos: "center 50%" },
   { src: gallery9,  alt: "Dodge Charger",    label: "Dodge Charger",    pos: "center 55%" },
-  { src: gallery10, alt: "Wnętrze pojazdu",  label: "Wnętrze pojazdu",  pos: "center 40%" },
   { src: gallery11, alt: "Mercedes E Coupé", label: "Mercedes E Coupé", pos: "center 50%" },
   { src: gallery12, alt: "DS7 Crossback",    label: "DS7 Crossback",    pos: "center 50%" },
   { src: gallery13, alt: "Audi Q5",          label: "Audi Q5",          pos: "center 50%" },
