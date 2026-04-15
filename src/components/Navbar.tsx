@@ -25,7 +25,7 @@ const Navbar = () => {
             src="/logo.png"
             alt="AutoSafe logo"
             className="
-              h-11 w-11 object-contain invert flex-shrink-0
+              h-14 w-14 object-contain invert flex-shrink-0
               drop-shadow-[0_0_6px_rgba(147,197,253,0.35)]
               group-hover:drop-shadow-[0_0_14px_rgba(147,197,253,0.65)]
               transition-all duration-300
