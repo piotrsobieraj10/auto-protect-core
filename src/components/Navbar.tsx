@@ -20,9 +20,25 @@ const Navbar = () => {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
       <div className="container mx-auto px-6 h-16 flex items-center justify-between">
-        <a href="/" className="flex items-center gap-2">
-          <img src="/logo.png" alt="AutoSafe logo" className="h-9 w-9 object-contain invert" />
-          <span className="text-lg font-bold">AutoSafe</span>
+        <a href="/" className="flex items-center gap-3 group">
+          <span
+            className="
+              flex items-center justify-center
+              w-11 h-11 rounded-xl
+              bg-white/10 border border-white/20
+              text-white font-black text-base tracking-tighter select-none
+              transition-all duration-300
+              shadow-[0_0_12px_2px_rgba(147,197,253,0.25)]
+              group-hover:shadow-[0_0_22px_6px_rgba(147,197,253,0.45)]
+              group-hover:bg-white/15
+            "
+            style={{ fontFamily: "'Inter', 'Helvetica Neue', sans-serif", letterSpacing: "-0.04em" }}
+          >
+            AS
+          </span>
+          <span className="text-lg font-bold text-white tracking-wide" style={{ fontFamily: "'Inter', 'Helvetica Neue', sans-serif" }}>
+            AutoSafe
+          </span>
         </a>
 
         {/* Desktop nav */}
