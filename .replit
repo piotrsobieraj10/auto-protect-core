@@ -75,3 +75,6 @@ SMTP_PORT = "465"
 SMTP_USER = "autosafe@o2.pl"
 SMTP_FROM = "AutoSafe <autosafe@o2.pl>"
 PORT = "3001"
+
+[userenv.production]
+NODE_ENV = "production"

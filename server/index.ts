@@ -3,6 +3,7 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import { createRequire } from "module";
+import { existsSync } from "fs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -502,9 +503,9 @@ app.post("/api/auth/panel-login", (req, res) => {
   }
 });
 
-// ── Static frontend (produkcja) ───────────────────────────────────────────────
-if (process.env.NODE_ENV === "production") {
-  const staticDir = path.join(__dirname, "public");
+// ── Static frontend ───────────────────────────────────────────────────────────
+const staticDir = path.join(__dirname, "public");
+if (existsSync(staticDir)) {
   app.use(express.static(staticDir));
   app.use((_req, res) => {
     res.sendFile(path.join(staticDir, "index.html"));
