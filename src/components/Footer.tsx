@@ -1,11 +1,10 @@
+import BrandLogo from "@/components/BrandLogo";
+
 const Footer = () => {
   return (
     <footer className="py-10 border-t border-border">
       <div className="container mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-2">
-          <img src="/logo.png" alt="AutoSafe logo" className="h-16 w-16 invert" />
-          <span className="font-bold">AutoSafe</span>
-        </div>
+        <BrandLogo size="lg" />
         <p className="text-sm text-muted-foreground">
           © {new Date().getFullYear()} AutoSafe. Wszystkie prawa zastrzeżone.
         </p>
