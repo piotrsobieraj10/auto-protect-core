@@ -21,8 +21,8 @@ const Navbar = () => {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
       <div className="container mx-auto px-6 h-16 flex items-center justify-between">
-        <a href="/" className="group">
-          <BrandLogo size="md" />
+        <a href="/">
+          <BrandLogo iconSize={40} mobileIconSize={32} textSize="text-lg" />
         </a>
 
         {/* Desktop nav */}
